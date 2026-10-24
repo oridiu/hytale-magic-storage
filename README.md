@@ -40,3 +40,9 @@ Voraussetzungen: Java 25 (Temurin), IntelliJ IDEA, installiertes Hytale.
 ## Bauen und auf den Server bringen
 
 `gradlew.bat build` erzeugt `build/libs/MagicStorage-<version>.jar`. Diese Datei in den Ordner `mods` des Servers kopieren und den Server neu starten. Server und Mod müssen dieselbe Hytale-Version haben.
+
+### GitHub Actions
+
+Jeder Push auf `main` und jeder Pull Request baut die Jar automatisch. Sie liegt danach im Lauf unter **Actions → Build → Artifacts** als `MagicStorage`. CI kompiliert gegen `com.hypixel.hytale:Server` in der Version `hytale_build` aus `gradle.properties`.
+
+Für ein Release `version` in `gradle.properties` erhöhen, committen und ein passendes Tag pushen, z. B. `git tag v0.1.0` und `git push origin v0.1.0`. Die Action legt dann ein GitHub-Release mit der Jar an.
