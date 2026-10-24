@@ -10,6 +10,8 @@ import javax.annotation.Nullable;
 public final class MagicItems {
 
     public static final String CHEST_ID = "Magic_Chest";
+    /** Two Magic Chests side by side turn into this block, like vanilla chests. */
+    public static final String LARGE_CHEST_ID = "Magic_Chest_Large";
     public static final String BAG_ID = "Magic_Bag";
 
     private MagicItems() {
@@ -19,12 +21,22 @@ public final class MagicItems {
         return !ItemStack.isEmpty(stack) && BAG_ID.equals(stack.getItemId());
     }
 
-    /** True for the chest block in any of its states (open, closed). */
+    /** True for a small or large Magic Chest in any of its states (open, closed). */
     public static boolean isChest(@Nullable BlockType blockType) {
+        String id = itemId(blockType);
+        return CHEST_ID.equals(id) || LARGE_CHEST_ID.equals(id);
+    }
+
+    public static boolean isLargeChest(@Nullable BlockType blockType) {
+        return LARGE_CHEST_ID.equals(itemId(blockType));
+    }
+
+    @Nullable
+    private static String itemId(@Nullable BlockType blockType) {
         if (blockType == null) {
-            return false;
+            return null;
         }
         Item item = blockType.getItem();
-        return item != null && CHEST_ID.equals(item.getId());
+        return item != null ? item.getId() : null;
     }
 }

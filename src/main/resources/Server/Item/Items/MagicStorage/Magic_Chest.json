@@ -68,6 +68,14 @@
       "Color": "#64a",
       "Radius": 3
     },
+    "ConnectedBlockRuleSet": {
+      "Type": "CustomTemplate",
+      "TemplateShapeAssetId": "ChestConnectedBlockTemplate",
+      "TemplateShapeBlockPatterns": {
+        "Default": "Magic_Chest",
+        "Double": "Magic_Chest_Large"
+      }
+    },
     "State": {
       "Definitions": {
         "CloseWindow": {

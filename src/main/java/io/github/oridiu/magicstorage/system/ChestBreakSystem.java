@@ -15,7 +15,8 @@ import com.hypixel.hytale.server.core.modules.entity.item.ItemComponent;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import io.github.oridiu.magicstorage.MagicItems;
 import io.github.oridiu.magicstorage.MagicStoragePlugin;
-import io.github.oridiu.magicstorage.storage.ChestKey;
+import com.hypixel.hytale.server.core.universe.world.World;
+import io.github.oridiu.magicstorage.storage.ChestBlock;
 import org.joml.Vector3d;
 import org.joml.Vector3i;
 
@@ -26,7 +27,8 @@ import java.util.List;
 /**
  * When a Magic Chest is broken, its contents fall out like from a normal
  * chest and the chest's storage is deleted. Linked bags then report that
- * the chest is gone.
+ * the chest is gone. Breaking either half of a large chest breaks all of it,
+ * like in vanilla.
  */
 public class ChestBreakSystem extends EntityEventSystem<EntityStore, BreakBlockEvent> {
 
@@ -45,12 +47,16 @@ public class ChestBreakSystem extends EntityEventSystem<EntityStore, BreakBlockE
         if (event.isCancelled() || !MagicItems.isChest(event.getBlockType())) {
             return;
         }
-        Vector3i pos = event.getTargetBlock();
-        String worldName = store.getExternalData().getWorld().getName();
-        List<ItemStack> items = MagicStoragePlugin.getInstance().getStorage().remove(ChestKey.of(worldName, pos));
+        World world = store.getExternalData().getWorld();
+        ChestBlock chest = ChestBlock.find(world, event.getTargetBlock());
+        if (chest == null) {
+            return;
+        }
+        List<ItemStack> items = MagicStoragePlugin.getInstance().getStorage().remove(chest.key(world));
         if (items.isEmpty()) {
             return;
         }
+        Vector3i pos = chest.origin();
         Vector3d dropPos = new Vector3d(pos.x + 0.5, pos.y + 0.5, pos.z + 0.5);
         Holder<EntityStore>[] drops = ItemComponent.generateItemDrops(commandBuffer, items, dropPos, Rotation3f.IDENTITY);
         commandBuffer.addEntities(drops, AddReason.SPAWN);

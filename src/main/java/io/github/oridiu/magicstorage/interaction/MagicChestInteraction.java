@@ -25,6 +25,7 @@ import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import io.github.oridiu.magicstorage.MagicItems;
 import io.github.oridiu.magicstorage.MagicStoragePlugin;
+import io.github.oridiu.magicstorage.storage.ChestBlock;
 import io.github.oridiu.magicstorage.storage.ChestKey;
 import org.joml.Vector3i;
 
@@ -36,8 +37,8 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * "Use" on a Magic Chest. With a Magic Bag in hand it links the bag to this
- * chest, otherwise it opens the chest like a normal one.
+ * "Use" on a Magic Chest (small or large). With a Magic Bag in hand it links
+ * the bag to this chest, otherwise it opens the chest like a normal one.
  */
 public class MagicChestInteraction extends SimpleBlockInteraction {
 
@@ -68,23 +69,12 @@ public class MagicChestInteraction extends SimpleBlockInteraction {
             return;
         }
 
-        ChunkStore chunkStore = world.getChunkStore();
-        Ref<ChunkStore> sectionRef = chunkStore.getChunkSectionReferenceAtBlock(pos.x, pos.y, pos.z);
-        if (sectionRef == null || !sectionRef.isValid()) {
+        ChestBlock chest = ChestBlock.find(world, pos);
+        if (chest == null) {
             return;
         }
-        BlockSection section = chunkStore.getStore().getComponent(sectionRef, BlockSection.getComponentType());
-        if (section == null) {
-            return;
-        }
-        BlockType blockType = BlockType.getAssetMap().getAsset(section.get(pos.x, pos.y, pos.z));
-        if (!MagicItems.isChest(blockType)) {
-            return;
-        }
-
-        MagicStoragePlugin plugin = MagicStoragePlugin.getInstance();
-        ChestKey key = ChestKey.of(world.getName(), pos);
-        SimpleItemContainer container = plugin.getStorage().getOrCreate(key, plugin.getSettings().getChestCapacity());
+        ChestKey key = chest.key(world);
+        SimpleItemContainer container = openStorage(world, chest);
 
         if (MagicItems.isBag(itemInHand)) {
             linkBag(context, key, playerRef);
@@ -96,8 +86,8 @@ public class MagicChestInteraction extends SimpleBlockInteraction {
             return;
         }
         UUID uuid = uuidComponent.getUuid();
-        int rotationIndex = section.getRotationIndex(pos.x, pos.y, pos.z);
-        ContainerBlockWindow window = new ContainerBlockWindow(pos.x, pos.y, pos.z, rotationIndex, blockType, container);
+        Vector3i origin = chest.origin();
+        ContainerBlockWindow window = new ContainerBlockWindow(origin.x, origin.y, origin.z, chest.rotation(), chest.blockType(), container);
         Store<EntityStore> store = ref.getStore();
         if (!player.getPageManager().setPageWithWindows(ref, store, Page.Bench, true, window)) {
             return;
@@ -105,15 +95,28 @@ public class MagicChestInteraction extends SimpleBlockInteraction {
 
         Set<UUID> viewers = VIEWERS.computeIfAbsent(key, k -> ConcurrentHashMap.newKeySet());
         if (viewers.add(uuid) && viewers.size() == 1) {
-            setChestState(world, pos, "OpenWindow");
+            setChestState(world, origin, "OpenWindow");
         }
         window.registerCloseEvent(event -> {
             viewers.remove(uuid);
             if (viewers.isEmpty()) {
                 VIEWERS.remove(key, viewers);
-                setChestState(world, pos, "CloseWindow");
+                setChestState(world, origin, "CloseWindow");
             }
         });
+    }
+
+    /**
+     * Returns the chest's storage. For a large chest this also joins the two
+     * halves, in case that did not happen when it was placed.
+     */
+    public static SimpleItemContainer openStorage(@Nonnull World world, @Nonnull ChestBlock chest) {
+        MagicStoragePlugin plugin = MagicStoragePlugin.getInstance();
+        ChestKey partner = chest.partnerKey(world);
+        if (partner != null) {
+            return plugin.getStorage().merge(chest.key(world), partner, plugin.getSettings().getLargeChestCapacity());
+        }
+        return plugin.getStorage().getOrCreate(chest.key(world), plugin.getSettings().getChestCapacity());
     }
 
     private static void linkBag(@Nonnull InteractionContext context, @Nonnull ChestKey key, @Nonnull PlayerRef playerRef) {
