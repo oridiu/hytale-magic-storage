@@ -3,11 +3,7 @@
   "RenderMode": "BlendAdd",
   "ParticleRotationInfluence": "Billboard",
   "LinearFiltering": true,
-  "MaxConcurrentParticles": 4,
-  "TotalParticles": {
-    "Min": 4,
-    "Max": 4
-  },
+  "MaxConcurrentParticles": 10,
   "SpawnRate": {
     "Min": 2,
     "Max": 2
@@ -66,11 +62,11 @@
         }
       },
       "35": {
-        "Opacity": 0.5,
+        "Opacity": 0.8,
         "Color": "#b98cff"
       },
       "70": {
-        "Opacity": 0.4
+        "Opacity": 0.6
       },
       "100": {
         "Opacity": 0,
