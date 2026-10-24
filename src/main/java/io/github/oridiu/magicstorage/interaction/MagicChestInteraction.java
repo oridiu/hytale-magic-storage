@@ -98,6 +98,7 @@ public class MagicChestInteraction extends SimpleBlockInteraction {
             setChestState(world, origin, "OpenWindow");
         }
         window.registerCloseEvent(event -> {
+            MagicStoragePlugin.getInstance().getStorage().saveDirty();
             viewers.remove(uuid);
             if (viewers.isEmpty()) {
                 VIEWERS.remove(key, viewers);

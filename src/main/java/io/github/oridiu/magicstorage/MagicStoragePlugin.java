@@ -1,6 +1,5 @@
 package io.github.oridiu.magicstorage;
 
-import com.hypixel.hytale.server.core.HytaleServer;
 import com.hypixel.hytale.server.core.modules.interaction.interaction.config.Interaction;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
@@ -11,6 +10,7 @@ import io.github.oridiu.magicstorage.interaction.MagicChestInteraction;
 import io.github.oridiu.magicstorage.storage.ChestStorage;
 import io.github.oridiu.magicstorage.system.ChestBreakSystem;
 import io.github.oridiu.magicstorage.system.ChestPlaceSystem;
+import io.github.oridiu.magicstorage.system.ChestSaveSystem;
 import io.github.oridiu.magicstorage.system.KeepBagOnDeathSystems;
 import io.github.oridiu.magicstorage.system.LinkedChestMarkerSystem;
 import io.github.oridiu.magicstorage.system.OneBagSystems;
@@ -18,9 +18,7 @@ import io.github.oridiu.magicstorage.system.OneBagSystems;
 import javax.annotation.Nonnull;
 import java.nio.file.Files;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ScheduledFuture;
 import java.util.function.Consumer;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 /**
@@ -33,7 +31,6 @@ public class MagicStoragePlugin extends JavaPlugin {
 
     private final Config<MagicStorageConfig> config = withConfig(MagicStorageConfig.CODEC);
     private ChestStorage storage;
-    private ScheduledFuture<?> autoSave;
 
     public MagicStoragePlugin(@Nonnull JavaPluginInit init) {
         super(init);
@@ -56,23 +53,11 @@ public class MagicStoragePlugin extends JavaPlugin {
     public synchronized void updateSettings(@Nonnull Consumer<MagicStorageConfig> change) {
         change.accept(getSettings());
         config.save();
-        scheduleAutoSave();
     }
 
     /** Reads config.json again, e.g. after an admin edited it by hand. */
     public CompletableFuture<MagicStorageConfig> reloadSettings() {
-        return config.load().thenApply(settings -> {
-            scheduleAutoSave();
-            return settings;
-        });
-    }
-
-    private synchronized void scheduleAutoSave() {
-        if (autoSave != null) {
-            autoSave.cancel(false);
-        }
-        int interval = getSettings().getAutoSaveSeconds();
-        autoSave = HytaleServer.SCHEDULED_EXECUTOR.scheduleWithFixedDelay(storage::saveDirty, interval, interval, TimeUnit.SECONDS);
+        return config.load();
     }
 
     @Override
@@ -85,6 +70,7 @@ public class MagicStoragePlugin extends JavaPlugin {
         getEntityStoreRegistry().registerSystem(new ChestBreakSystem());
         getEntityStoreRegistry().registerSystem(new ChestPlaceSystem());
         getEntityStoreRegistry().registerSystem(new LinkedChestMarkerSystem());
+        getChunkStoreRegistry().registerSystem(new ChestSaveSystem());
         getEntityStoreRegistry().registerSystem(new OneBagSystems.LimitInventory());
         getEntityStoreRegistry().registerSystem(new OneBagSystems.BlockCrafting());
         getEntityStoreRegistry().registerSystem(new KeepBagOnDeathSystems.Stash());
@@ -99,15 +85,11 @@ public class MagicStoragePlugin extends JavaPlugin {
         if (!Files.exists(getDataDirectory().resolve("config.json"))) {
             config.save();
         }
-        scheduleAutoSave();
         getLogger().at(Level.INFO).log("[MagicStorage] started, deposit via bag: %s", getSettings().isAllowDepositViaBag());
     }
 
     @Override
     public void shutdown() {
-        if (autoSave != null) {
-            autoSave.cancel(false);
-        }
         if (storage != null) {
             storage.saveAllAndWait();
         }

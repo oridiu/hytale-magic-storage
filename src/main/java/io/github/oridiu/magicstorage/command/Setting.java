@@ -21,10 +21,7 @@ enum Setting {
             (config, value) -> config.setChestCapacity(value)),
     SHOW_LINKED_CHEST("ShowLinkedChest", "glow", true,
             config -> String.valueOf(config.isShowLinkedChest()),
-            (config, value) -> config.setShowLinkedChest(value != 0)),
-    AUTO_SAVE_SECONDS("AutoSaveSeconds", "autosave", false,
-            config -> String.valueOf(config.getAutoSaveSeconds()),
-            (config, value) -> config.setAutoSaveSeconds(value));
+            (config, value) -> config.setShowLinkedChest(value != 0));
 
     final String key;
     final String shortName;

@@ -38,15 +38,13 @@ public class SettingsPage extends InteractiveCustomUIPage<SettingsPage.Data> {
         commandBuilder.set("#AllowDeposit #CheckBox.Value", config.isAllowDepositViaBag());
         commandBuilder.set("#ShowLinkedChest #CheckBox.Value", config.isShowLinkedChest());
         commandBuilder.set("#ChestCapacity.Value", (int) config.getChestCapacity());
-        commandBuilder.set("#AutoSaveSeconds.Value", config.getAutoSaveSeconds());
         eventBuilder.addEventBinding(
                 CustomUIEventBindingType.Activating,
                 "#SaveButton",
                 new EventData()
                         .append(Data.ALLOW_DEPOSIT, "#AllowDeposit #CheckBox.Value")
                         .append(Data.SHOW_LINKED_CHEST, "#ShowLinkedChest #CheckBox.Value")
-                        .append(Data.CHEST_CAPACITY, "#ChestCapacity.Value")
-                        .append(Data.AUTO_SAVE_SECONDS, "#AutoSaveSeconds.Value"));
+                        .append(Data.CHEST_CAPACITY, "#ChestCapacity.Value"));
     }
 
     @Override
@@ -55,7 +53,6 @@ public class SettingsPage extends InteractiveCustomUIPage<SettingsPage.Data> {
             config.setAllowDepositViaBag(data.allowDeposit);
             config.setShowLinkedChest(data.showLinkedChest);
             config.setChestCapacity((int) Math.round(data.chestCapacity));
-            config.setAutoSaveSeconds((int) Math.round(data.autoSaveSeconds));
         });
         playerRef.sendMessage(Message.translation("server.magicstorage.settings.saved").color("#b48cff"));
         Player player = store.getComponent(ref, Player.getComponentType());
@@ -68,18 +65,15 @@ public class SettingsPage extends InteractiveCustomUIPage<SettingsPage.Data> {
         static final String ALLOW_DEPOSIT = "@AllowDeposit";
         static final String SHOW_LINKED_CHEST = "@ShowLinkedChest";
         static final String CHEST_CAPACITY = "@ChestCapacity";
-        static final String AUTO_SAVE_SECONDS = "@AutoSaveSeconds";
 
         public static final BuilderCodec<Data> CODEC = BuilderCodec.builder(Data.class, Data::new)
                 .addField(new KeyedCodec<>(ALLOW_DEPOSIT, Codec.BOOLEAN), (data, value) -> data.allowDeposit = value, data -> data.allowDeposit)
                 .addField(new KeyedCodec<>(SHOW_LINKED_CHEST, Codec.BOOLEAN), (data, value) -> data.showLinkedChest = value, data -> data.showLinkedChest)
                 .addField(new KeyedCodec<>(CHEST_CAPACITY, Codec.DOUBLE), (data, value) -> data.chestCapacity = value, data -> data.chestCapacity)
-                .addField(new KeyedCodec<>(AUTO_SAVE_SECONDS, Codec.DOUBLE), (data, value) -> data.autoSaveSeconds = value, data -> data.autoSaveSeconds)
                 .build();
 
         private boolean allowDeposit;
         private boolean showLinkedChest;
         private double chestCapacity;
-        private double autoSaveSeconds;
     }
 }

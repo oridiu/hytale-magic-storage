@@ -167,10 +167,15 @@ public class ChestStorage {
         return items;
     }
 
-    /** Writes every chest that changed since the last save. */
+    /**
+     * Writes every chest that changed since the last save. Called when a chest
+     * window closes, when the world saves its chunks, and on shutdown.
+     */
     public void saveDirty() {
         for (ChestKey key : List.copyOf(dirty)) {
-            dirty.remove(key);
+            if (!dirty.remove(key)) {
+                continue;
+            }
             SimpleItemContainer container = containers.get(key);
             if (container == null) {
                 continue;

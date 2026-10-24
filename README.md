@@ -45,10 +45,9 @@ On first start the server creates `mods/oridiu_MagicStorage/config.json`:
 |---|---|---|
 | `AllowDepositViaBag` | `true` | Set to `false` to only allow taking items out through the bag, not putting them in |
 | `ChestCapacity` | `18` | Slots of a Magic Chest, same as a vanilla chest (9 to 90). A large chest has twice as many. Raising it grows existing chests the next time they are opened; chests never shrink |
-| `ShowLinkedChest` | `true` | Show the glow above the chest a player's bag is linked to |
-| `AutoSaveSeconds` | `30` | How often changed chests are saved (at least 5) |
+| `ShowLinkedChest` | `true` | Show sparks and a glowing gem on the chest a player's bag is linked to |
 
-Chest contents are stored in `mods/oridiu_MagicStorage/chests/`, one file per chest. `links.json` next to it records which positions belong to a large chest.
+Chest contents are stored in `mods/oridiu_MagicStorage/chests/`, one file per chest. A chest is saved when its window closes, whenever the world saves, and when the server stops. `links.json` next to it records which positions belong to a large chest.
 
 ### In-game commands
 
@@ -58,7 +57,7 @@ Operators (or anyone with the plugin's command permission) can change the settin
 |---|---|
 | `/magicstorage settings` | Opens a settings window |
 | `/magicstorage show` | Lists the current settings |
-| `/magicstorage set <setting> <value>` | Changes one setting, e.g. `/magicstorage set deposit false` or `/magicstorage set capacity 27`. Short names: `deposit`, `capacity`, `glow`, `autosave` |
+| `/magicstorage set <setting> <value>` | Changes one setting, e.g. `/magicstorage set deposit false` or `/magicstorage set capacity 27`. Short names: `deposit`, `capacity`, `glow` |
 | `/magicstorage reload` | Reads `config.json` again after editing it by hand |
 
 `/ms` works as a short form of `/magicstorage`.
