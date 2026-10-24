@@ -60,7 +60,7 @@ public class MagicBagInteraction extends SimpleInstantInteraction {
             return;
         }
         ChestKey key = bag.getFromMetadataOrNull(ChestKey.BAG_LINK);
-        if (key == null) {
+        if (key == null || key.world() == null) {
             playerRef.sendMessage(Message.translation("server.magicstorage.bag.notLinked"));
             return;
         }
