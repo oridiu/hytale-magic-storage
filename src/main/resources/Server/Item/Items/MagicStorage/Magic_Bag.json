@@ -1,0 +1,82 @@
+{
+  "TranslationProperties": {
+    "Name": "server.items.Magic_Bag.name",
+    "Description": "server.items.Magic_Bag.description"
+  },
+  "PlayerAnimationsId": "Block",
+  "Categories": [
+    "Items.Tools"
+  ],
+  "Quality": "Epic",
+  "MaxStack": 1,
+  "DropOnDeath": false,
+  "Model": "Items/Tools/Feedbag/Feedbag.blockymodel",
+  "Texture": "Items/Tools/Feedbag/Seedbag_Texture.png",
+  "Scale": 1.2,
+  "Icon": "Icons/ItemsGenerated/Utility_Bag_Seed.png",
+  "IconProperties": {
+    "Scale": 0.5,
+    "Rotation": [
+      22.5,
+      45.0,
+      22.5
+    ],
+    "Translation": [
+      0.0,
+      -15.0
+    ]
+  },
+  "Light": {
+    "Color": "#64a",
+    "Radius": 2
+  },
+  "Recipe": {
+    "TimeSeconds": 3,
+    "KnowledgeRequired": false,
+    "Input": [
+      {
+        "ItemId": "Ingredient_Scraps",
+        "Quantity": 20
+      },
+      {
+        "ItemId": "Ingredient_Crystal_Void",
+        "Quantity": 4
+      },
+      {
+        "ItemId": "Ingredient_Spider_Silk",
+        "Quantity": 2
+      },
+      {
+        "ItemId": "Ingredient_Voidheart",
+        "Quantity": 1
+      }
+    ],
+    "BenchRequirement": [
+      {
+        "Id": "GoblinLab_Workbench",
+        "Type": "Crafting",
+        "Categories": [
+          "GoblinLab_Gadgets"
+        ],
+        "RequiredAugmentTags": [
+          "goblin_lab_power"
+        ]
+      }
+    ]
+  },
+  "Tags": {
+    "Type": [
+      "Utility"
+    ]
+  },
+  "Interactions": {
+    "Secondary": {
+      "Interactions": [
+        {
+          "Type": "MagicStorageBag"
+        }
+      ]
+    }
+  },
+  "ItemSoundSetId": "ISS_Weapons_Wood"
+}

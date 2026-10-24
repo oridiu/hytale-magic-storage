@@ -1,0 +1,129 @@
+{
+  "TranslationProperties": {
+    "Name": "server.items.Magic_Chest.name",
+    "Description": "server.items.Magic_Chest.description"
+  },
+  "PlayerAnimationsId": "Block",
+  "Categories": [
+    "Furniture.Containers"
+  ],
+  "Quality": "Rare",
+  "Icon": "Icons/ItemsGenerated/Furniture_GrandWizard_Chest_Small.png",
+  "Recipe": {
+    "TimeSeconds": 3,
+    "KnowledgeRequired": false,
+    "Input": [
+      {
+        "ItemId": "Ingredient_Scraps",
+        "Quantity": 40
+      },
+      {
+        "ItemId": "Ingredient_Crystal_Void",
+        "Quantity": 8
+      },
+      {
+        "ItemId": "Ingredient_Gadget_Assembly",
+        "Quantity": 2
+      },
+      {
+        "ItemId": "Furniture_Crude_Chest_Small",
+        "Quantity": 1
+      }
+    ],
+    "BenchRequirement": [
+      {
+        "Id": "GoblinLab_Workbench",
+        "Type": "Crafting",
+        "Categories": [
+          "GoblinLab_Gadgets"
+        ],
+        "RequiredAugmentTags": [
+          "goblin_lab_power"
+        ]
+      }
+    ]
+  },
+  "BlockType": {
+    "BlockParticleSetId": "Wood",
+    "BlockSoundSetId": "Wood",
+    "PhysicalMaterialId": "Wood",
+    "CustomModel": "Blocks/Decorative_Sets/Royal_Magic/Chest_Small.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "Blocks/Decorative_Sets/Royal_Magic/Chest_Small_Texture.png",
+        "Weight": 1
+      }
+    ],
+    "DrawType": "Model",
+    "Flags": {},
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Benches"
+      }
+    },
+    "Material": "Solid",
+    "Opacity": "Transparent",
+    "ParticleColor": "#7b3fd1",
+    "Light": {
+      "Color": "#64a",
+      "Radius": 3
+    },
+    "State": {
+      "Definitions": {
+        "CloseWindow": {
+          "InteractionSoundEventId": "SFX_Chest_Wooden_Close",
+          "CustomModelAnimation": "Blocks/Animations/Chest/Chest_Close.blockyanim"
+        },
+        "OpenWindow": {
+          "InteractionSoundEventId": "SFX_Chest_Wooden_Open",
+          "CustomModelAnimation": "Blocks/Animations/Chest/Chest_Open.blockyanim"
+        }
+      }
+    },
+    "Supporting": {
+      "Up": [
+        {
+          "FaceType": "Full"
+        }
+      ]
+    },
+    "Support": {
+      "Down": [
+        {
+          "FaceType": "Full"
+        }
+      ]
+    },
+    "VariantRotation": "NESW",
+    "InteractionHint": "server.interactionHints.openDoor",
+    "Interactions": {
+      "Use": {
+        "Interactions": [
+          {
+            "Type": "MagicStorageChest"
+          }
+        ]
+      }
+    },
+    "TextureComputedColor": "#AC512B"
+  },
+  "Tags": {
+    "Type": [
+      "Furniture"
+    ]
+  },
+  "IconProperties": {
+    "Scale": 0.55,
+    "Rotation": [
+      22.5,
+      45,
+      22.5
+    ],
+    "Translation": [
+      0,
+      -15
+    ]
+  },
+  "ItemSoundSetId": "ISS_Blocks_Wood",
+  "MaxStack": 1
+}

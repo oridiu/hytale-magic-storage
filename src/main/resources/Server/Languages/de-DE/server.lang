@@ -1,0 +1,9 @@
+items.Magic_Chest.name = Magische Truhe
+items.Magic_Chest.description = <i>Ihr Inhalt ist mit einem verknüpften Magischen Beutel von überall erreichbar.</i>
+items.Magic_Bag.name = Magischer Beutel
+items.Magic_Bag.description = <i>Benutze ihn an einer Magischen Truhe, um ihn zu verknüpfen, dann öffnet Rechtsklick die Truhe von überall. Du kannst nur einen tragen.</i>
+magicstorage.bag.linked = Dein Magischer Beutel ist jetzt mit dieser Magischen Truhe verknüpft.
+magicstorage.bag.alreadyLinked = Dein Magischer Beutel ist bereits mit dieser Magischen Truhe verknüpft.
+magicstorage.bag.notLinked = Dieser Magische Beutel ist noch nicht verknüpft. Benutze ihn zuerst an einer Magischen Truhe.
+magicstorage.bag.chestMissing = Die verknüpfte Magische Truhe existiert nicht mehr. Verknüpfe den Beutel mit einer anderen.
+magicstorage.bag.onlyOne = Du kannst nur einen Magischen Beutel tragen.
