@@ -7,6 +7,7 @@ Die Modelle und Texturen der Mod basieren auf Vanilla-Assets (Royal-Magic-Truhe,
 ```
 python tools/assets/chest_texture.py VANILLA RES   # Truhentextur (violett, Void-Inneres, Kristallflächen)
 python tools/assets/chest_model.py   VANILLA RES   # Truhenmodell mit schwebendem Void-Kristall
+python tools/assets/chest_large.py   VANILLA RES   # große Truhe (Modell und Textur), aus der großen Royal-Magic-Truhe
 python tools/assets/bag.py           VANILLA RES   # Beutelmodell und -textur
 ```
 
@@ -14,6 +15,7 @@ Nach Änderungen in Blockbench müssen die Skripte nicht erneut laufen. Nur die 
 
 ```
 python tools/assets/render_icon.py RES/Common/Blocks/MagicStorage/Magic_Chest.blockymodel RES/Common/Blocks/MagicStorage/Magic_Chest_Texture.png RES/Common/Icons/ItemsGenerated/Magic_Chest.png 30,45,0
+python tools/assets/render_icon.py RES/Common/Blocks/MagicStorage/Magic_Chest_Large.blockymodel RES/Common/Blocks/MagicStorage/Magic_Chest_Large_Texture.png RES/Common/Icons/ItemsGenerated/Magic_Chest_Large.png 30,45,0
 python tools/assets/render_icon.py RES/Common/Items/MagicStorage/Magic_Bag.blockymodel RES/Common/Items/MagicStorage/Magic_Bag_Texture.png RES/Common/Icons/ItemsGenerated/Magic_Bag.png 30,45,0
 ```
 
