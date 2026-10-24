@@ -6,4 +6,5 @@ magicstorage.bag.linked = Your Magic Bag is now linked to this Magic Chest.
 magicstorage.bag.alreadyLinked = Your Magic Bag is already linked to this Magic Chest.
 magicstorage.bag.notLinked = This Magic Bag is not linked yet. Use it on a Magic Chest first.
 magicstorage.bag.chestMissing = The linked Magic Chest no longer exists. Link the bag to another one.
+magicstorage.chest.unreadable = This Magic Chest could not be loaded.
 magicstorage.bag.onlyOne = You can only carry one Magic Bag.

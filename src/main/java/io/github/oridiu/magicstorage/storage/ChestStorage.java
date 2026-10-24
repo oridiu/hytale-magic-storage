@@ -38,13 +38,17 @@ public class ChestStorage {
         this.logger = logger;
     }
 
-    /** Returns the chest's container, loading it from disk or creating an empty one. */
-    @Nonnull
+    /**
+     * Returns the chest's container, loading it from disk or creating an empty one.
+     * Null when the file is there but cannot be read; that file is not replaced.
+     */
+    @Nullable
     public SimpleItemContainer getOrCreate(@Nonnull ChestKey key, short capacity) {
         return containers.computeIfAbsent(key, k -> {
-            SimpleItemContainer loaded = load(k);
-            if (loaded != null) {
-                return watch(k, loaded);
+            if (Files.exists(file(k))) {
+                SimpleItemContainer loaded = load(k);
+                // Unreadable file: leave it alone instead of saving an empty chest over it.
+                return loaded != null ? watch(k, loaded) : null;
             }
             dirty.add(k);
             return watch(k, new SimpleItemContainer(capacity));

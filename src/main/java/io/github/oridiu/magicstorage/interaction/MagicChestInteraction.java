@@ -85,6 +85,10 @@ public class MagicChestInteraction extends SimpleBlockInteraction {
         MagicStoragePlugin plugin = MagicStoragePlugin.getInstance();
         ChestKey key = ChestKey.of(world.getName(), pos);
         SimpleItemContainer container = plugin.getStorage().getOrCreate(key, plugin.getSettings().getChestCapacity());
+        if (container == null) {
+            playerRef.sendMessage(Message.translation("server.magicstorage.chest.unreadable").color("#ff5555"));
+            return;
+        }
 
         if (MagicItems.isBag(itemInHand)) {
             linkBag(context, key, playerRef);
