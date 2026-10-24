@@ -74,9 +74,22 @@ The `.blockymodel` files open in Blockbench with the Hytale plugin. How they wer
 
 Every push to `main` and every pull request builds the jar on GitHub Actions. It is attached to the run under **Actions → Build → Artifacts** as `MagicStorage`. CI compiles against `com.hypixel.hytale:Server` in the version set by `hytale_build` in `gradle.properties`.
 
-To release, bump `version` in `gradle.properties`, commit, and push a matching tag, for example `git tag v0.1.0` and `git push origin v0.1.0`. The workflow then creates a GitHub release with the jar.
+### Releasing
 
-The same tag also uploads the jar to CurseForge when the repository secrets `CURSEFORGE_TOKEN` (an upload token from your CurseForge account settings) and `CURSEFORGE_PROJECT_ID` are set. Without them the step is skipped. Optional repository variables:
+Releases and `CHANGELOG.md` are made by [release-please](https://github.com/googleapis/release-please). It reads the commit messages on `main`, so they have to follow [Conventional Commits](https://www.conventionalcommits.org/):
+
+| Prefix | Example | Effect |
+|---|---|---|
+| `feat:` | `feat: add a sort button to the chest` | new minor version, listed under Features |
+| `fix:` | `fix: bag keeps its link after relog` | new patch version, listed under Bug Fixes |
+| `feat!:` or a `BREAKING CHANGE:` footer | `feat!: new storage format` | breaking change (minor bump before 1.0) |
+| `docs:`, `chore:`, `ci:`, `refactor:`, `test:` | `ci: cache Gradle` | no release, not in the changelog |
+
+Pull requests are squash merged, so the pull request title becomes the commit message and has to use one of these prefixes; a check on every pull request enforces it.
+
+After each push to `main`, release-please opens or updates a release pull request that bumps `version` in `gradle.properties` and `manifest.json` and adds the new section to `CHANGELOG.md`. Merging it creates the tag (for example `v0.1.0`) and the GitHub release with those notes; the workflow then attaches the jar. Do not bump the version or push tags by hand. To force a version, add a `Release-As: 1.0.0` footer to a commit.
+
+The release also uploads the jar to CurseForge, with the release notes as changelog, when the repository secrets `CURSEFORGE_TOKEN` (an upload token from your CurseForge account settings) and `CURSEFORGE_PROJECT_ID` are set. Without them the step is skipped. Optional repository variables:
 
 | Variable | Default | Description |
 |---|---|---|

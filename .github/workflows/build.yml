@@ -3,7 +3,6 @@ name: Build
 on:
   push:
     branches: [main]
-    tags: ['v*']
   pull_request:
   workflow_dispatch:
     inputs:
@@ -16,6 +15,38 @@ permissions:
   contents: read
 
 jobs:
+  # Keeps a release pull request open that bumps the version and updates
+  # CHANGELOG.md from Conventional Commits. Merging that pull request creates
+  # the tag and the GitHub release; the jobs below then attach the jar and
+  # upload it to CurseForge.
+  release-please:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    outputs:
+      release_created: ${{ steps.release.outputs.release_created }}
+      tag_name: ${{ steps.release.outputs.tag_name }}
+    steps:
+      - id: release
+        uses: googleapis/release-please-action@v4
+        with:
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
+
+  # release-please builds the changelog from commit messages, and pull
+  # requests are squash merged, so the title must be a Conventional Commit.
+  pr-title:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    steps:
+      - uses: amannn/action-semantic-pull-request@v5
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
   build:
     runs-on: ubuntu-latest
     steps:
@@ -40,20 +71,23 @@ jobs:
           if-no-files-found: error
 
   release:
-    if: startsWith(github.ref, 'refs/tags/v')
-    needs: build
+    if: needs.release-please.outputs.release_created == 'true'
+    needs: [release-please, build]
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    env:
+      TAG: ${{ needs.release-please.outputs.tag_name }}
     steps:
       - uses: actions/checkout@v5
 
-      # The tag has to match version in gradle.properties, e.g. v0.1.0.
+      # release-please bumps gradle.properties in the release pull request,
+      # so the tag always matches; this only guards against manual edits.
       - name: Check tag against version
         run: |
           version=$(grep '^version=' gradle.properties | cut -d= -f2)
-          if [ "${GITHUB_REF_NAME}" != "v${version}" ]; then
-            echo "::error::Tag ${GITHUB_REF_NAME} does not match version ${version} in gradle.properties"
+          if [ "${TAG}" != "v${version}" ]; then
+            echo "::error::Tag ${TAG} does not match version ${version} in gradle.properties"
             exit 1
           fi
 
@@ -62,20 +96,21 @@ jobs:
           name: MagicStorage
           path: dist
 
-      - uses: softprops/action-gh-release@v2
-        with:
-          files: dist/*.jar
-          generate_release_notes: true
+      - name: Attach jar to release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "$TAG" dist/*.jar --clobber
 
   # Uploads the released jar to CurseForge. Needs the secrets
   # CURSEFORGE_TOKEN and CURSEFORGE_PROJECT_ID; skipped without them.
   # Optional repository variables: CURSEFORGE_API_URL, CURSEFORGE_GAME_VERSION,
   # CURSEFORGE_RELEASE_TYPE (alpha, beta or release; default beta).
   curseforge:
-    if: startsWith(github.ref, 'refs/tags/v')
-    needs: release
+    if: needs.release-please.outputs.release_created == 'true'
+    needs: [release-please, release]
     runs-on: ubuntu-latest
     env:
+      TAG: ${{ needs.release-please.outputs.tag_name }}
       CF_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
       CF_PROJECT_ID: ${{ secrets.CURSEFORGE_PROJECT_ID }}
       CF_API: ${{ vars.CURSEFORGE_API_URL || 'https://hytale.curseforge.com' }}
@@ -89,18 +124,19 @@ jobs:
           name: MagicStorage
           path: dist
 
+      # The release notes are the new CHANGELOG.md section.
       - name: Read release notes
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           {
             echo 'CHANGELOG<<CHANGELOG_EOF'
-            gh release view "$GITHUB_REF_NAME" --json body --jq .body || echo "Release $GITHUB_REF_NAME"
+            gh release view "$TAG" --json body --jq .body || echo "Release $TAG"
             echo 'CHANGELOG_EOF'
           } >> "$GITHUB_ENV"
 
       - name: Upload to CurseForge
-        run: .github/scripts/curseforge.sh upload "$(ls dist/*.jar | head -n 1)" "$GITHUB_REF_NAME"
+        run: .github/scripts/curseforge.sh upload "$(ls dist/*.jar | head -n 1)" "$TAG"
 
   curseforge-check:
     if: github.event_name == 'workflow_dispatch' && inputs.curseforge_check
