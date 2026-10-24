@@ -49,25 +49,23 @@ repositories {
 dependencies {
     if (hasLocalServer) {
         compileOnly(files(serverJar))
-        runtimeOnly(files(serverJar))
     } else {
         compileOnly("com.hypixel.hytale:Server:$hytale_build")
     }
 }
 
-// Keeps Version and IncludesAssetPack in manifest.json in sync with gradle.properties.
-tasks.register('updatePluginManifest') {
-    def manifestFile = file('src/main/resources/manifest.json')
+// Writes Version and IncludesAssetPack from gradle.properties into the
+// manifest.json that goes into the jar. The source file stays untouched.
+tasks.named('processResources') {
+    inputs.property('version', version)
+    inputs.property('includes_pack', includes_pack)
     doLast {
+        def manifestFile = new File(destinationDir, 'manifest.json')
         def manifestJson = new groovy.json.JsonSlurper().parseText(manifestFile.text)
         manifestJson.Version = version
         manifestJson.IncludesAssetPack = includes_pack.toBoolean()
         manifestFile.text = groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(manifestJson)) + "\n"
     }
-}
-
-tasks.named('processResources') {
-    dependsOn 'updatePluginManifest'
 }
 
 tasks.named('shadowJar') {
@@ -117,6 +115,9 @@ if (hasLocalServer) {
             moduleName = project.idea.module.name + '.main'
             programParameters = serverArgs(sourceSets.main.java.srcDirs.first().parentFile.absolutePath)
             workingDirectory = serverRunDir.absolutePath
+            // The server jar is compileOnly (IntelliJ "provided"), so the run
+            // configuration has to add it to the classpath itself.
+            includeProvidedDependencies = true
         }
     }
 }
