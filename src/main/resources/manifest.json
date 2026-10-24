@@ -1,0 +1,17 @@
+{
+    "Group": "oridiu",
+    "Name": "MagicStorage",
+    "Version": "0.1.0",
+    "Description": "Magic Chest and Magic Bag: access a linked chest from anywhere.",
+    "Authors": [
+        {
+            "Name": "oridiu"
+        }
+    ],
+    "Website": "https://github.com/oridiu/hytale-magic-storage",
+    "Dependencies": {},
+    "OptionalDependencies": {},
+    "DisabledByDefault": false,
+    "Main": "io.github.oridiu.magicstorage.MagicStoragePlugin",
+    "IncludesAssetPack": true
+}

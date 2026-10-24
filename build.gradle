@@ -1,0 +1,122 @@
+plugins {
+    id 'java'
+    id 'org.jetbrains.gradle.plugin.idea-ext' version '1.3'
+    id 'com.gradleup.shadow' version '9.3.1'
+}
+
+import org.gradle.internal.os.OperatingSystem
+
+// Locates the Hytale install. Override with -Phytale_home=... or HYTALE_HOME.
+ext {
+    if (project.hasProperty('hytale_home')) {
+        hytaleHome = project.findProperty('hytale_home')
+    } else if (System.getenv('HYTALE_HOME')) {
+        hytaleHome = System.getenv('HYTALE_HOME')
+    } else {
+        def os = OperatingSystem.current()
+        if (os.isWindows()) {
+            hytaleHome = "${System.getProperty("user.home")}/AppData/Roaming/Hytale"
+        } else if (os.isMacOsX()) {
+            hytaleHome = "${System.getProperty("user.home")}/Library/Application Support/Hytale"
+        } else {
+            hytaleHome = "${System.getProperty("user.home")}/.var/app/com.hypixel.HytaleLauncher/data/Hytale"
+        }
+    }
+}
+
+def gameDir = "$hytaleHome/install/$patchline/package/game/latest"
+def serverJar = file("$gameDir/Server/HytaleServer.jar")
+def assetsZip = file("$gameDir/Assets.zip")
+def hasLocalServer = serverJar.exists()
+if (!hasLocalServer) {
+    logger.lifecycle("HytaleServer.jar not found at ${serverJar}; falling back to maven build ${hytale_build}. Set -Phytale_home=... to use a local install.")
+}
+
+java {
+    toolchain.languageVersion = JavaLanguageVersion.of(java_version)
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        name = "hytale-release"
+        url = uri("https://maven.hytale.com/release")
+    }
+}
+
+// Compile against the server jar of the installed game, so the API always
+// matches the version you actually play. The jar is never bundled.
+dependencies {
+    if (hasLocalServer) {
+        compileOnly(files(serverJar))
+        runtimeOnly(files(serverJar))
+    } else {
+        compileOnly("com.hypixel.hytale:Server:$hytale_build")
+    }
+}
+
+// Keeps Version and IncludesAssetPack in manifest.json in sync with gradle.properties.
+tasks.register('updatePluginManifest') {
+    def manifestFile = file('src/main/resources/manifest.json')
+    doLast {
+        def manifestJson = new groovy.json.JsonSlurper().parseText(manifestFile.text)
+        manifestJson.Version = version
+        manifestJson.IncludesAssetPack = includes_pack.toBoolean()
+        manifestFile.text = groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(manifestJson)) + "\n"
+    }
+}
+
+tasks.named('processResources') {
+    dependsOn 'updatePluginManifest'
+}
+
+tasks.named('shadowJar') {
+    archiveClassifier.set('')
+    mergeServiceFiles()
+}
+
+tasks.named('build') {
+    dependsOn 'shadowJar'
+}
+
+if (hasLocalServer) {
+    def serverRunDir = file("$projectDir/run")
+    serverRunDir.mkdirs()
+
+    // Loads the plugin straight from src/main so asset edits are picked up
+    // without rebuilding the jar.
+    def serverArgs = { String modDir ->
+        def args = '--allow-op --disable-sentry --assets="' + assetsZip + '"'
+        def modPaths = [modDir]
+        if (load_user_mods.toBoolean()) {
+            modPaths << "${hytaleHome}/UserData/Mods"
+        }
+        return args + ' --mods="' + modPaths.join(',') + '"'
+    }
+
+    tasks.register('runServer', JavaExec) {
+        group = 'hytale'
+        description = 'Builds the plugin and starts a local dev server with it.'
+        dependsOn tasks.named('shadowJar')
+        mainClass = 'com.hypixel.hytale.Main'
+        classpath = files(serverJar)
+        workingDir = serverRunDir
+        standardInput = System.in
+        doFirst {
+            def modPaths = [tasks.named('shadowJar').get().archiveFile.get().asFile.absolutePath]
+            if (load_user_mods.toBoolean()) {
+                modPaths << "${hytaleHome}/UserData/Mods"
+            }
+            setArgs(['--allow-op', '--disable-sentry', "--assets=${assetsZip}", "--mods=${modPaths.join(',')}"])
+        }
+    }
+
+    idea.project.settings.runConfigurations {
+        'HytaleServer'(org.jetbrains.gradle.ext.Application) {
+            mainClass = 'com.hypixel.hytale.Main'
+            moduleName = project.idea.module.name + '.main'
+            programParameters = serverArgs(sourceSets.main.java.srcDirs.first().parentFile.absolutePath)
+            workingDirectory = serverRunDir.absolutePath
+        }
+    }
+}
