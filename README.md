@@ -40,3 +40,7 @@ Voraussetzungen: Java 25 (Temurin), IntelliJ IDEA, installiertes Hytale.
 ## Bauen und auf den Server bringen
 
 `gradlew.bat build` erzeugt `build/libs/MagicStorage-<version>.jar`. Diese Datei in den Ordner `mods` des Servers kopieren und den Server neu starten. Server und Mod müssen dieselbe Hytale-Version haben.
+
+## Lizenz
+
+[MIT](LICENSE) © oridiu
