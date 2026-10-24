@@ -1,64 +1,83 @@
-# Magic Storage (Hytale-Mod)
+<p align="center">
+  <img src="docs/images/banner.png" alt="Magic Storage: Linked Chest &amp; Bag" width="100%">
+</p>
 
-Eine Hytale-Mod für Chapter 1 (Update 7) mit zwei neuen Gegenständen:
+# Magic Storage: Linked Chest & Bag
 
-- **Magische Truhe:** eine Truhe, deren Inhalt von überall erreichbar ist.
-- **Magischer Beutel:** wird mit einer Magischen Truhe verknüpft und öffnet sie von überall, z. B. im Forgotten Temple.
+Tired of running back to base from the Forgotten Temple? Magic Storage is a Hytale server plugin for Chapter 1 (Update 7) that adds two items:
 
-## Im Spiel
+- **Magic Chest:** a chest whose contents can be reached from anywhere.
+- **Magic Bag:** link it to a Magic Chest and open that chest from anywhere, even in other worlds and dungeon instances.
 
-- **Magische Truhe** und **Magischer Beutel** werden an der Goblin-Werkbank (Goblin Tinkerer's Workbench) im Forgotten Temple unter „Gadgets“ gecraftet. Die Werkbank muss mit Strom versorgt sein.
-  - Truhe: 40 Scraps, 8 Void Crystal Shards, 2 Dubious Assembly, 1 Small Crude Chest
-  - Beutel: 20 Scraps, 4 Void Crystal Shards, 2 Spider Silk, 1 Voidheart
-- **Verknüpfen:** Beutel in die Hand nehmen und die Magische Truhe benutzen (Taste zum Öffnen von Truhen). Jeder Beutel darf mit jeder Magischen Truhe verknüpft werden, auch mit fremden. Beliebig viele Beutel können auf dieselbe Truhe zeigen.
-- **Öffnen von überall:** Rechtsklick mit dem Beutel in der Hand öffnet die verknüpfte Truhe, auch in anderen Welten oder Dungeon-Instanzen.
-- **Ein Beutel pro Spieler:** Ein zweiter Beutel wird wieder fallen gelassen, und solange man einen trägt, lässt sich kein weiterer craften.
-- **Tod:** Der Beutel bleibt im Inventar.
-- **Truhe abbauen:** Der Inhalt fällt heraus, verknüpfte Beutel melden danach „Truhe existiert nicht mehr“.
+## Features
 
-## Einstellungen
+- **Crafting:** both items are crafted at the Goblin Tinkerer's Workbench in the Forgotten Temple, under **Gadgets**. The workbench must be powered.
 
-Beim ersten Start legt der Server `mods/oridiu_MagicStorage/config.json` an:
+  | Item | Ingredients |
+  |---|---|
+  | Magic Chest | 40 Scraps, 8 Void Crystal Shards, 2 Dubious Assembly, 1 Small Crude Chest |
+  | Magic Bag | 20 Scraps, 4 Void Crystal Shards, 2 Spider Silk, 1 Voidheart |
 
-| Einstellung | Standard | Bedeutung |
+- **Linking:** hold the bag and use a Magic Chest (the key you open chests with). Any bag can be linked to any Magic Chest, including chests placed by other players, and any number of bags can share one chest.
+- **Open from anywhere:** right-click with the bag in your hand to open the linked chest, even from another world or a dungeon instance.
+- **One bag per player:** a second bag is dropped again, and you cannot craft another one while you carry a bag.
+- **Death:** the bag stays in your inventory.
+- **Breaking the chest:** its contents drop, and linked bags report that the chest no longer exists.
+- **Languages:** English and German.
+
+## Installation
+
+Magic Storage is a single server plugin with its assets bundled in the `.jar`. Players do not need to install anything.
+
+1. Download `MagicStorage-<version>.jar`.
+2. Put it into the `mods` folder of your server.
+3. Restart the server.
+
+Requires Hytale server 0.7.4 or a later 0.7.x build. Server and plugin must target the same Hytale version.
+
+## Configuration
+
+On first start the server creates `mods/oridiu_MagicStorage/config.json`:
+
+| Setting | Default | Description |
 |---|---|---|
-| `AllowDepositViaBag` | `true` | `false`: Über den Beutel kann man nur entnehmen, nicht ablegen |
-| `ChestCapacity` | `36` | Plätze einer neuen Magischen Truhe (9 bis 180) |
-| `AutoSaveSeconds` | `30` | Wie oft geänderte Truhen gespeichert werden |
+| `AllowDepositViaBag` | `true` | Set to `false` to only allow taking items out through the bag, not putting them in |
+| `ChestCapacity` | `36` | Slots of a newly placed Magic Chest (9 to 180) |
+| `AutoSaveSeconds` | `30` | How often changed chests are saved (at least 5) |
 
-Der Truheninhalt liegt in `mods/oridiu_MagicStorage/chests/`, eine Datei pro Truhe.
+Chest contents are stored in `mods/oridiu_MagicStorage/chests/`, one file per chest.
 
-## Entwickeln
+## Development
 
-Voraussetzungen: Java 25 (Temurin), IntelliJ IDEA, installiertes Hytale.
+Requirements: Java 25 (Temurin), IntelliJ IDEA, and an installed copy of Hytale.
 
-1. Projekt in IntelliJ öffnen und Gradle laden lassen. Das Projekt kompiliert gegen die `HytaleServer.jar` deiner Hytale-Installation.
-2. Run-Konfiguration **HytaleServer** starten (oder `gradlew.bat runServer`).
-3. Beim ersten Start in der Server-Konsole `auth login device` eingeben und bestätigen, danach `auth persistence Encrypted`.
-4. Hytale starten und mit `localhost` verbinden.
+1. Open the project in IntelliJ and let Gradle sync. The project compiles against the `HytaleServer.jar` of your Hytale installation. If Hytale is not installed in the default location, set `hytale_home` in `gradle.properties` or pass `-Phytale_home=<path>`.
+2. Start the **HytaleServer** run configuration, or run `gradlew.bat runServer`.
+3. On first start, enter `auth login device` in the server console and confirm, then `auth persistence Encrypted`.
+4. Start Hytale and connect to `localhost`.
 
-## Modelle und Texturen
+### Models and textures
 
-Truhe und Beutel haben eigene Modelle, Texturen und Icons unter `src/main/resources/Common/`:
+The chest and bag have their own models, textures and icons under `src/main/resources/Common/`:
 
-| Datei | Inhalt |
+| File | Content |
 |---|---|
-| `Blocks/MagicStorage/Magic_Chest.blockymodel` + `_Texture.png` | Violette Truhe mit Void-Kristall auf dem Deckel und Void-Wirbel im Inneren |
-| `Items/MagicStorage/Magic_Bag.blockymodel` + `_Texture.png` | Violetter Beutel mit Goldrand, Augen-Rune und Void-Kristall |
-| `Icons/ItemsGenerated/Magic_Chest.png`, `Magic_Bag.png` | Inventar-Icons (64×64) |
+| `Blocks/MagicStorage/Magic_Chest.blockymodel` + `_Texture.png` | Violet chest with a void crystal on the lid and a void swirl inside |
+| `Items/MagicStorage/Magic_Bag.blockymodel` + `_Texture.png` | Violet bag with a gold rim, an eye rune and a void crystal |
+| `Icons/ItemsGenerated/Magic_Chest.png`, `Magic_Bag.png` | Inventory icons (64×64) |
 
-Die `.blockymodel`-Dateien lassen sich in Blockbench mit dem Hytale-Plugin öffnen. Wie sie entstanden sind und wie man die Icons neu rendert, steht in `tools/assets/README.md`.
+The `.blockymodel` files open in Blockbench with the Hytale plugin. How they were made and how to re-render the icons is described in `tools/assets/README.md`.
 
-## Bauen und auf den Server bringen
+### Building
 
-`gradlew.bat build` erzeugt `build/libs/MagicStorage-<version>.jar`. Diese Datei in den Ordner `mods` des Servers kopieren und den Server neu starten. Server und Mod müssen dieselbe Hytale-Version haben.
+`gradlew.bat build` creates `build/libs/MagicStorage-<version>.jar`.
 
-### GitHub Actions
+Every push to `main` and every pull request builds the jar on GitHub Actions. It is attached to the run under **Actions → Build → Artifacts** as `MagicStorage`. CI compiles against `com.hypixel.hytale:Server` in the version set by `hytale_build` in `gradle.properties`.
 
-Jeder Push auf `main` und jeder Pull Request baut die Jar automatisch. Sie liegt danach im Lauf unter **Actions → Build → Artifacts** als `MagicStorage`. CI kompiliert gegen `com.hypixel.hytale:Server` in der Version `hytale_build` aus `gradle.properties`.
+To release, bump `version` in `gradle.properties`, commit, and push a matching tag, for example `git tag v0.1.0` and `git push origin v0.1.0`. The workflow then creates a GitHub release with the jar.
 
-Für ein Release `version` in `gradle.properties` erhöhen, committen und ein passendes Tag pushen, z. B. `git tag v0.1.0` und `git push origin v0.1.0`. Die Action legt dann ein GitHub-Release mit der Jar an.
-
-## Lizenz
+## License
 
 [MIT](LICENSE) © oridiu
+
+Magic Storage is a fan-made mod and is not affiliated with or endorsed by Hypixel Studios.
