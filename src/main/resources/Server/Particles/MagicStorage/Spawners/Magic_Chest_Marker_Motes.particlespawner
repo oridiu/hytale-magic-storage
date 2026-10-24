@@ -1,0 +1,80 @@
+{
+  "$Comment": "A few tiny void motes rising through the mist.",
+  "RenderMode": "Erosion",
+  "ParticleRotationInfluence": "Billboard",
+  "LinearFiltering": true,
+  "MaxConcurrentParticles": 6,
+  "TotalParticles": {
+    "Min": 5,
+    "Max": 6
+  },
+  "SpawnRate": {
+    "Min": 3,
+    "Max": 3
+  },
+  "ParticleLifeSpan": {
+    "Min": 2.5,
+    "Max": 3.5
+  },
+  "EmitOffset": {
+    "X": {
+      "Min": 0,
+      "Max": 0.5
+    },
+    "Y": {
+      "Min": 0,
+      "Max": 0.3
+    },
+    "Z": {
+      "Min": 0,
+      "Max": 0.5
+    }
+  },
+  "InitialVelocity": {
+    "Yaw": {
+      "Min": 0,
+      "Max": 360
+    },
+    "Pitch": {
+      "Min": 70,
+      "Max": 90
+    },
+    "Speed": {
+      "Min": 0.2,
+      "Max": 0.4
+    }
+  },
+  "TrailSpawnerPositionMultiplier": 1,
+  "TrailSpawnerRotationMultiplier": 1,
+  "Particle": {
+    "Texture": "Particles/Textures/Basic/Ball3.png",
+    "ScaleRatioConstraint": "OneToOne",
+    "UVOption": "RandomFlipUV",
+    "Animation": {
+      "0": {
+        "Opacity": 0,
+        "Color": "#c9a6ff"
+      },
+      "25": {
+        "Opacity": 1
+      },
+      "70": {
+        "Opacity": 0.8,
+        "Color": "#8600ff"
+      },
+      "100": {
+        "Opacity": 0,
+        "Color": "#5700ff"
+      }
+    },
+    "InitialAnimationFrame": {
+      "Scale": {
+        "X": {
+          "Min": 0.04,
+          "Max": 0.07
+        }
+      },
+      "Opacity": 0
+    }
+  }
+}

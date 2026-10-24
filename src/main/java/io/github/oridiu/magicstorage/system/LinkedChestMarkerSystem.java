@@ -31,9 +31,12 @@ import java.util.List;
 public class LinkedChestMarkerSystem extends DelayedEntitySystem<EntityStore> {
 
     public static final String PARTICLE_SYSTEM = "Magic_Chest_Marker";
+    /**
+     * Each spawn emits a fixed number of particles (see the spawners' TotalParticles)
+     * that fade in and out on their own and outlive the interval, so the glow is
+     * continuous without ever being cut off.
+     */
     private static final float INTERVAL = 2.0F;
-    /** Slightly longer than the interval, so the glow does not flicker between two spawns. */
-    private static final float PARTICLE_DURATION = INTERVAL + 0.5F;
     private static final double RANGE = 64.0;
 
     public LinkedChestMarkerSystem() {
@@ -66,7 +69,7 @@ public class LinkedChestMarkerSystem extends DelayedEntitySystem<EntityStore> {
         if (transform == null) {
             return;
         }
-        Vector3d marker = new Vector3d(chest.x() + 0.5, chest.y() + 1.0, chest.z() + 0.5);
+        Vector3d marker = new Vector3d(chest.x() + 0.5, chest.y() + 0.9, chest.z() + 0.5);
         ChestKey partner = storage.partnerOf(chest);
         if (partner != null) {
             marker.add((partner.x() - chest.x()) * 0.5, 0.0, (partner.z() - chest.z()) * 0.5);
@@ -75,7 +78,7 @@ public class LinkedChestMarkerSystem extends DelayedEntitySystem<EntityStore> {
             return;
         }
         ParticleUtil.spawnParticleEffect(
-                PARTICLE_SYSTEM, marker.x, marker.y, marker.z, 0.0F, 0.0F, 0.0F, 1.0F, null, null, List.of(ref), commandBuffer, PARTICLE_DURATION);
+                PARTICLE_SYSTEM, marker.x, marker.y, marker.z, List.of(ref), commandBuffer);
     }
 
     @Nullable

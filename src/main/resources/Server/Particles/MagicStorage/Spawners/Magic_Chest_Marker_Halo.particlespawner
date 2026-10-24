@@ -1,0 +1,52 @@
+{
+  "$Comment": "One large, faint glow per spawn. It lives twice as long as the spawn interval, so two always overlap and the glow never pops.",
+  "RenderMode": "BlendAdd",
+  "ParticleRotationInfluence": "Billboard",
+  "LinearFiltering": true,
+  "MaxConcurrentParticles": 1,
+  "TotalParticles": {
+    "Min": 1,
+    "Max": 1
+  },
+  "SpawnRate": {
+    "Min": 1,
+    "Max": 1
+  },
+  "ParticleLifeSpan": {
+    "Min": 4,
+    "Max": 4
+  },
+  "TrailSpawnerPositionMultiplier": 1,
+  "TrailSpawnerRotationMultiplier": 1,
+  "Particle": {
+    "Texture": "Particles/Textures/Basic/Glow.png",
+    "ScaleRatioConstraint": "OneToOne",
+    "UVOption": "RandomFlipUV",
+    "SoftParticles": "Enable",
+    "SoftParticlesFadeFactor": 1.0,
+    "Animation": {
+      "0": {
+        "Opacity": 0,
+        "Color": "#7d51a8"
+      },
+      "50": {
+        "Opacity": 0.35,
+        "Color": "#b98cff"
+      },
+      "100": {
+        "Opacity": 0,
+        "Color": "#7d51a8"
+      }
+    },
+    "InitialAnimationFrame": {
+      "Scale": {
+        "X": {
+          "Min": 2.2,
+          "Max": 2.6
+        }
+      },
+      "Opacity": 0
+    }
+  },
+  "CameraOffset": -0.1
+}

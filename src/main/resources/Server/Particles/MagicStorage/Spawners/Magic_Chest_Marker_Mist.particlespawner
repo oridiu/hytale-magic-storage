@@ -1,0 +1,109 @@
+{
+  "$Comment": "Soft violet puffs that drift up slowly and fade in and out over several seconds.",
+  "RenderMode": "BlendAdd",
+  "ParticleRotationInfluence": "Billboard",
+  "LinearFiltering": true,
+  "MaxConcurrentParticles": 4,
+  "TotalParticles": {
+    "Min": 4,
+    "Max": 4
+  },
+  "SpawnRate": {
+    "Min": 2,
+    "Max": 2
+  },
+  "ParticleLifeSpan": {
+    "Min": 3.5,
+    "Max": 4.5
+  },
+  "EmitOffset": {
+    "X": {
+      "Min": 0,
+      "Max": 0.4
+    },
+    "Y": {
+      "Min": 0,
+      "Max": 0.2
+    },
+    "Z": {
+      "Min": 0,
+      "Max": 0.4
+    }
+  },
+  "InitialVelocity": {
+    "Yaw": {
+      "Min": 0,
+      "Max": 360
+    },
+    "Pitch": {
+      "Min": 75,
+      "Max": 90
+    },
+    "Speed": {
+      "Min": 0.15,
+      "Max": 0.3
+    }
+  },
+  "TrailSpawnerPositionMultiplier": 1,
+  "TrailSpawnerRotationMultiplier": 1,
+  "Particle": {
+    "Texture": "Particles/Textures/Basic/Glow.png",
+    "ScaleRatioConstraint": "OneToOne",
+    "UVOption": "RandomFlipUV",
+    "SoftParticles": "Enable",
+    "SoftParticlesFadeFactor": 1.0,
+    "CameraNearFadeStartDistance": 1,
+    "CameraNearFadeEndDistance": 3,
+    "Animation": {
+      "0": {
+        "Opacity": 0,
+        "Color": "#9a5cff",
+        "Scale": {
+          "X": {
+            "Min": 1,
+            "Max": 1
+          }
+        }
+      },
+      "35": {
+        "Opacity": 0.5,
+        "Color": "#b98cff"
+      },
+      "70": {
+        "Opacity": 0.4
+      },
+      "100": {
+        "Opacity": 0,
+        "Color": "#5a1fbf",
+        "Scale": {
+          "X": {
+            "Min": 1.7,
+            "Max": 1.7
+          }
+        }
+      }
+    },
+    "InitialAnimationFrame": {
+      "Scale": {
+        "X": {
+          "Min": 0.9,
+          "Max": 1.3
+        }
+      },
+      "Opacity": 0,
+      "Rotation": {
+        "Z": {
+          "Min": 0,
+          "Max": 360
+        }
+      }
+    }
+  },
+  "UVMotion": {
+    "Texture": "Particles/Textures/UVMotion/FlowMapSmoke.png",
+    "Strength": 6.0,
+    "Scale": 1.0,
+    "SpeedY": 0.2
+  },
+  "CameraOffset": -0.1
+}
