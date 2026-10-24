@@ -1,25 +1,22 @@
 {
   "Spawners": [
     {
-      "SpawnerId": "Drop_Epic_Glow",
+      "SpawnerId": "Magic_Chest_Marker_Halo",
       "PositionOffset": {
-        "Y": 0.05
+        "Y": 0.3
       }
     },
     {
-      "SpawnerId": "Drop_Epic_Ray_Center",
+      "SpawnerId": "Magic_Chest_Marker_Mist",
       "PositionOffset": {
-        "Y": 1.1
+        "Y": 0.1
       }
     },
     {
-      "SpawnerId": "Drop_Epic_Ray",
+      "SpawnerId": "Magic_Chest_Marker_Motes",
       "PositionOffset": {
-        "Y": 1.0
+        "Y": 0.1
       }
-    },
-    {
-      "SpawnerId": "Drop_Epic_Sparks"
     }
   ],
   "CullDistance": 64.0
