@@ -97,6 +97,8 @@ if (hasLocalServer) {
     if (load_user_mods.toBoolean()) {
         modDirs << file("${hytaleHome}/UserData/Mods").absolutePath
     }
+    // The server's console library loads native code; this silences the JDK 25 warning.
+    def serverJvmArgs = ['--enable-native-access=ALL-UNNAMED']
     def serverArgs = ['--allow-op', '--disable-sentry', "--assets=${assetsZip}", "--mods=${modDirs.join(',')}"]
 
     tasks.register('runServer', JavaExec) {
@@ -105,6 +107,7 @@ if (hasLocalServer) {
         classpath = sourceSets.dev.runtimeClasspath
         mainClass = 'com.hypixel.hytale.Main'
         workingDir = serverRunDir
+        jvmArgs = serverJvmArgs
         standardInput = System.in
         args = serverArgs
     }
@@ -115,6 +118,7 @@ if (hasLocalServer) {
             moduleName = project.idea.module.name + '.dev'
             programParameters = serverArgs.collect { '"' + it + '"' }.join(' ')
             workingDirectory = serverRunDir.absolutePath
+            jvmArgs = serverJvmArgs.join(' ')
         }
     }
 }
