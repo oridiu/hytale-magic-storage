@@ -37,6 +37,18 @@ Voraussetzungen: Java 25 (Temurin), IntelliJ IDEA, installiertes Hytale.
 3. Beim ersten Start in der Server-Konsole `auth login device` eingeben und bestätigen, danach `auth persistence Encrypted`.
 4. Hytale starten und mit `localhost` verbinden.
 
+## Modelle und Texturen
+
+Truhe und Beutel haben eigene Modelle, Texturen und Icons unter `src/main/resources/Common/`:
+
+| Datei | Inhalt |
+|---|---|
+| `Blocks/MagicStorage/Magic_Chest.blockymodel` + `_Texture.png` | Violette Truhe mit Void-Kristall auf dem Deckel und Void-Wirbel im Inneren |
+| `Items/MagicStorage/Magic_Bag.blockymodel` + `_Texture.png` | Violetter Beutel mit Goldrand, Augen-Rune und Void-Kristall |
+| `Icons/ItemsGenerated/Magic_Chest.png`, `Magic_Bag.png` | Inventar-Icons (64×64) |
+
+Die `.blockymodel`-Dateien lassen sich in Blockbench mit dem Hytale-Plugin öffnen. Wie sie entstanden sind und wie man die Icons neu rendert, steht in `tools/assets/README.md`.
+
 ## Bauen und auf den Server bringen
 
 `gradlew.bat build` erzeugt `build/libs/MagicStorage-<version>.jar`. Diese Datei in den Ordner `mods` des Servers kopieren und den Server neu starten. Server und Mod müssen dieselbe Hytale-Version haben.

@@ -8,7 +8,7 @@
     "Furniture.Containers"
   ],
   "Quality": "Rare",
-  "Icon": "Icons/ItemsGenerated/Furniture_GrandWizard_Chest_Small.png",
+  "Icon": "Icons/ItemsGenerated/Magic_Chest.png",
   "Recipe": {
     "TimeSeconds": 3,
     "KnowledgeRequired": false,
@@ -47,10 +47,10 @@
     "BlockParticleSetId": "Wood",
     "BlockSoundSetId": "Wood",
     "PhysicalMaterialId": "Wood",
-    "CustomModel": "Blocks/Decorative_Sets/Royal_Magic/Chest_Small.blockymodel",
+    "CustomModel": "Blocks/MagicStorage/Magic_Chest.blockymodel",
     "CustomModelTexture": [
       {
-        "Texture": "Blocks/Decorative_Sets/Royal_Magic/Chest_Small_Texture.png",
+        "Texture": "Blocks/MagicStorage/Magic_Chest_Texture.png",
         "Weight": 1
       }
     ],
@@ -105,7 +105,7 @@
         ]
       }
     },
-    "TextureComputedColor": "#AC512B"
+    "TextureComputedColor": "#4B2A8C"
   },
   "Tags": {
     "Type": [

@@ -10,10 +10,10 @@
   "Quality": "Epic",
   "MaxStack": 1,
   "DropOnDeath": false,
-  "Model": "Items/Tools/Feedbag/Feedbag.blockymodel",
-  "Texture": "Items/Tools/Feedbag/Seedbag_Texture.png",
+  "Model": "Items/MagicStorage/Magic_Bag.blockymodel",
+  "Texture": "Items/MagicStorage/Magic_Bag_Texture.png",
   "Scale": 1.2,
-  "Icon": "Icons/ItemsGenerated/Utility_Bag_Seed.png",
+  "Icon": "Icons/ItemsGenerated/Magic_Bag.png",
   "IconProperties": {
     "Scale": 0.5,
     "Rotation": [
