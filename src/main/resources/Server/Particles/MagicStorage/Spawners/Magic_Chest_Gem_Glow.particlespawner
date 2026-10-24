@@ -1,0 +1,47 @@
+{
+  "$Comment": "Steady cyan glow on the chest's front gem. Each particle fades in over the first half of its life and out over the second; a new one starts every half life, so two always overlap and their sum stays constant.",
+  "RenderMode": "BlendAdd",
+  "ParticleRotationInfluence": "Billboard",
+  "LinearFiltering": true,
+  "MaxConcurrentParticles": 3,
+  "ParticleLifeSpan": {
+    "Min": 1.0,
+    "Max": 1.0
+  },
+  "SpawnRate": {
+    "Min": 2.0,
+    "Max": 2.0
+  },
+  "TrailSpawnerPositionMultiplier": 1,
+  "TrailSpawnerRotationMultiplier": 1,
+  "Particle": {
+    "Texture": "Particles/Textures/Basic/Glow.png",
+    "ScaleRatioConstraint": "OneToOne",
+    "UVOption": "None",
+    "SoftParticles": "Disable",
+    "Animation": {
+      "0": {
+        "Opacity": 0.0,
+        "Color": "#5ee6ff"
+      },
+      "50": {
+        "Opacity": 1.0,
+        "Color": "#5ee6ff"
+      },
+      "100": {
+        "Opacity": 0.0,
+        "Color": "#5ee6ff"
+      }
+    },
+    "InitialAnimationFrame": {
+      "Scale": {
+        "X": {
+          "Min": 0.75,
+          "Max": 0.75
+        }
+      },
+      "Opacity": 1.0
+    }
+  },
+  "CameraOffset": 0.3
+}

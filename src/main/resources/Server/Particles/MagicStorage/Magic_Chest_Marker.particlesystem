@@ -1,22 +1,7 @@
 {
   "Spawners": [
     {
-      "SpawnerId": "Magic_Chest_Marker_Halo",
-      "PositionOffset": {
-        "Y": 0.3
-      }
-    },
-    {
-      "SpawnerId": "Magic_Chest_Marker_Mist",
-      "PositionOffset": {
-        "Y": 0.1
-      }
-    },
-    {
-      "SpawnerId": "Magic_Chest_Marker_Motes",
-      "PositionOffset": {
-        "Y": 0.1
-      }
+      "SpawnerId": "Magic_Chest_Marker_Sparks"
     }
   ],
   "CullDistance": 64.0
