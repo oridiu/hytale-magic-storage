@@ -51,6 +51,11 @@ public class MagicChestInteraction extends SimpleBlockInteraction {
     /** Players looking into each chest, to play the open and close animation. */
     private static final Map<ChestKey, Set<UUID>> VIEWERS = new ConcurrentHashMap<>();
 
+    /** Drops who is counted as looking in this chest, so a replacement starts closed. */
+    public static void dropViewers(@Nonnull ChestKey key) {
+        VIEWERS.remove(key);
+    }
+
     @Override
     protected void interactWithBlock(
             @Nonnull World world,
@@ -108,6 +113,10 @@ public class MagicChestInteraction extends SimpleBlockInteraction {
             setChestState(world, pos, "OpenWindow");
         }
         window.registerCloseEvent(event -> {
+            // This window belongs to the set captured at open. A broken chest drops that set.
+            if (VIEWERS.get(key) != viewers) {
+                return;
+            }
             viewers.remove(uuid);
             if (viewers.isEmpty()) {
                 VIEWERS.remove(key, viewers);
