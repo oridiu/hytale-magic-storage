@@ -9,6 +9,7 @@
         }
     ],
     "Website": "https://github.com/oridiu/hytale-magic-storage",
+    "ServerVersion": "0.7.4",
     "Dependencies": {},
     "OptionalDependencies": {},
     "DisabledByDefault": false,

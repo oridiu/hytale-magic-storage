@@ -44,11 +44,20 @@ repositories {
     }
 }
 
+// Source set used only to run the dev server: the plugin classes plus the
+// server jar on one classpath. shadowJar never sees it.
+sourceSets {
+    dev {
+        runtimeClasspath += main.output
+    }
+}
+
 // Compile against the server jar of the installed game, so the API always
 // matches the version you actually play. The jar is never bundled.
 dependencies {
     if (hasLocalServer) {
         compileOnly(files(serverJar))
+        devRuntimeOnly(files(serverJar))
     } else {
         compileOnly("com.hypixel.hytale:Server:$hytale_build")
     }
@@ -81,43 +90,31 @@ if (hasLocalServer) {
     def serverRunDir = file("$projectDir/run")
     serverRunDir.mkdirs()
 
-    // Loads the plugin straight from src/main so asset edits are picked up
-    // without rebuilding the jar.
-    def serverArgs = { String modDir ->
-        def args = '--allow-op --disable-sentry --assets="' + assetsZip + '"'
-        def modPaths = [modDir]
-        if (load_user_mods.toBoolean()) {
-            modPaths << "${hytaleHome}/UserData/Mods"
-        }
-        return args + ' --mods="' + modPaths.join(',') + '"'
+    // --mods only takes directories. The plugin and its asset pack are
+    // loaded from the dev classpath (build/resources/main), so asset edits
+    // need a processResources run; the src/main entry is skipped as a duplicate.
+    def modDirs = [file('src/main').absolutePath]
+    if (load_user_mods.toBoolean()) {
+        modDirs << file("${hytaleHome}/UserData/Mods").absolutePath
     }
+    def serverArgs = ['--allow-op', '--disable-sentry', "--assets=${assetsZip}", "--mods=${modDirs.join(',')}"]
 
     tasks.register('runServer', JavaExec) {
         group = 'hytale'
-        description = 'Builds the plugin and starts a local dev server with it.'
-        dependsOn tasks.named('shadowJar')
+        description = 'Starts a local dev server with the plugin.'
+        classpath = sourceSets.dev.runtimeClasspath
         mainClass = 'com.hypixel.hytale.Main'
-        classpath = files(serverJar)
         workingDir = serverRunDir
         standardInput = System.in
-        doFirst {
-            def modPaths = [tasks.named('shadowJar').get().archiveFile.get().asFile.absolutePath]
-            if (load_user_mods.toBoolean()) {
-                modPaths << "${hytaleHome}/UserData/Mods"
-            }
-            setArgs(['--allow-op', '--disable-sentry', "--assets=${assetsZip}", "--mods=${modPaths.join(',')}"])
-        }
+        args = serverArgs
     }
 
     idea.project.settings.runConfigurations {
         'HytaleServer'(org.jetbrains.gradle.ext.Application) {
             mainClass = 'com.hypixel.hytale.Main'
-            moduleName = project.idea.module.name + '.main'
-            programParameters = serverArgs(sourceSets.main.java.srcDirs.first().parentFile.absolutePath)
+            moduleName = project.idea.module.name + '.dev'
+            programParameters = serverArgs.collect { '"' + it + '"' }.join(' ')
             workingDirectory = serverRunDir.absolutePath
-            // The server jar is compileOnly (IntelliJ "provided"), so the run
-            // configuration has to add it to the classpath itself.
-            includeProvidedDependencies = true
         }
     }
 }
