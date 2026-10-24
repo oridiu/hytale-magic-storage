@@ -22,6 +22,7 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import io.github.oridiu.magicstorage.MagicItems;
 import io.github.oridiu.magicstorage.MagicStoragePlugin;
 import io.github.oridiu.magicstorage.storage.ChestKey;
+import io.github.oridiu.magicstorage.storage.ChestStorage;
 
 import javax.annotation.Nonnull;
 
@@ -66,11 +67,17 @@ public class MagicBagInteraction extends SimpleInstantInteraction {
         }
 
         MagicStoragePlugin plugin = MagicStoragePlugin.getInstance();
-        SimpleItemContainer container = plugin.getStorage().get(key);
-        if (container == null) {
+        ChestStorage storage = plugin.getStorage();
+        if (storage.get(key) == null) {
             playerRef.sendMessage(Message.translation("server.magicstorage.bag.chestMissing").color("#ff5555"));
             return;
         }
+        // Grows the chest if the configured size went up since it was last opened.
+        ChestKey chestKey = storage.resolve(key);
+        short capacity = storage.partnerOf(chestKey) != null
+                ? plugin.getSettings().getLargeChestCapacity()
+                : plugin.getSettings().getChestCapacity();
+        SimpleItemContainer container = storage.getOrCreate(chestKey, capacity);
 
         ItemContainer view = container;
         if (!plugin.getSettings().isAllowDepositViaBag()) {

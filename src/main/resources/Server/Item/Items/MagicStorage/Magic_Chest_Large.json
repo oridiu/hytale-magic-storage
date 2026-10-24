@@ -1,0 +1,108 @@
+{
+  "TranslationProperties": {
+    "Name": "server.items.Magic_Chest_Large.name",
+    "Description": "server.items.Magic_Chest_Large.description"
+  },
+  "PlayerAnimationsId": "Block",
+  "Categories": [
+    "Furniture.Containers"
+  ],
+  "Quality": "Rare",
+  "Icon": "Icons/ItemsGenerated/Magic_Chest_Large.png",
+  "IconProperties": {
+    "Scale": 0.5,
+    "Rotation": [
+      22.5,
+      45,
+      22.5
+    ],
+    "Translation": [
+      13,
+      -9
+    ]
+  },
+  "BlockType": {
+    "BlockParticleSetId": "Wood",
+    "BlockSoundSetId": "Wood",
+    "PhysicalMaterialId": "Wood",
+    "CustomModel": "Blocks/MagicStorage/Magic_Chest_Large.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "Blocks/MagicStorage/Magic_Chest_Large_Texture.png",
+        "Weight": 1
+      }
+    ],
+    "DrawType": "Model",
+    "Flags": {},
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Benches",
+        "DropList": {
+          "Container": {
+            "Type": "Single",
+            "Item": {
+              "ItemId": "Magic_Chest",
+              "QuantityMin": 2,
+              "QuantityMax": 2
+            }
+          }
+        }
+      }
+    },
+    "HitboxType": "Chest_Large",
+    "Material": "Solid",
+    "Opacity": "Transparent",
+    "ParticleColor": "#7b3fd1",
+    "Light": {
+      "Color": "#64a",
+      "Radius": 3
+    },
+    "State": {
+      "Definitions": {
+        "CloseWindow": {
+          "InteractionSoundEventId": "SFX_Chest_Wooden_Close",
+          "CustomModelAnimation": "Blocks/Animations/Chest/Chest_Close.blockyanim"
+        },
+        "OpenWindow": {
+          "InteractionSoundEventId": "SFX_Chest_Wooden_Open",
+          "CustomModelAnimation": "Blocks/Animations/Chest/Chest_Open.blockyanim"
+        }
+      }
+    },
+    "Supporting": {
+      "Up": [
+        {
+          "FaceType": "Full"
+        }
+      ]
+    },
+    "Support": {
+      "Down": [
+        {
+          "FaceType": "Full"
+        }
+      ]
+    },
+    "VariantRotation": "NESW",
+    "InteractionHint": "server.interactionHints.openDoor",
+    "Interactions": {
+      "Use": {
+        "Interactions": [
+          {
+            "Type": "MagicStorageChest"
+          }
+        ]
+      }
+    },
+    "TextureComputedColor": "#4B2A8C"
+  },
+  "Tags": {
+    "Type": [
+      "Furniture"
+    ]
+  },
+  "Scale": 0.6,
+  "Variant": true,
+  "ItemSoundSetId": "ISS_Blocks_Wood",
+  "MaxStack": 1
+}
