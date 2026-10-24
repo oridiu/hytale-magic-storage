@@ -1,13 +1,9 @@
 {
   "$Comment": "A few tiny void motes rising through the mist.",
-  "RenderMode": "Erosion",
+  "RenderMode": "BlendAdd",
   "ParticleRotationInfluence": "Billboard",
   "LinearFiltering": true,
-  "MaxConcurrentParticles": 6,
-  "TotalParticles": {
-    "Min": 5,
-    "Max": 6
-  },
+  "MaxConcurrentParticles": 12,
   "SpawnRate": {
     "Min": 3,
     "Max": 3
@@ -70,8 +66,8 @@
     "InitialAnimationFrame": {
       "Scale": {
         "X": {
-          "Min": 0.04,
-          "Max": 0.07
+          "Min": 0.08,
+          "Max": 0.14
         }
       },
       "Opacity": 0
