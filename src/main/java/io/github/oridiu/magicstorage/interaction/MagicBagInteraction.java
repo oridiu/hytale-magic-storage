@@ -87,6 +87,7 @@ public class MagicBagInteraction extends SimpleInstantInteraction {
         }
         ContainerWindow window = new ContainerWindow(view);
         window.getData().addProperty("blockItemId", MagicItems.CHEST_ID);
+        window.registerCloseEvent(event -> storage.saveDirty());
         pageManager.setPageWithWindows(ref, ref.getStore(), Page.Bench, true, window);
     }
 }

@@ -11,6 +11,7 @@ import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import io.github.oridiu.magicstorage.MagicItems;
+import io.github.oridiu.magicstorage.MagicStoragePlugin;
 import io.github.oridiu.magicstorage.interaction.MagicChestInteraction;
 import io.github.oridiu.magicstorage.storage.ChestBlock;
 import org.joml.Vector3i;
@@ -48,6 +49,7 @@ public class ChestPlaceSystem extends EntityEventSystem<EntityStore, PlaceBlockE
             ChestBlock chest = ChestBlock.find(world, pos);
             if (chest != null && chest.isLarge()) {
                 MagicChestInteraction.openStorage(world, chest);
+                MagicStoragePlugin.getInstance().getStorage().saveDirty();
             }
         });
     }

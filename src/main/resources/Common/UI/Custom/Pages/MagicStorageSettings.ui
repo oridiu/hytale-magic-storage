@@ -46,23 +46,6 @@ $C.@PageOverlay {
             Format: (MaxDecimalPlaces: 0, Step: 1, MinValue: 9, MaxValue: 90);
           }
         }
-
-        Group {
-          LayoutMode: Top;
-          FlexWeight: 1;
-
-          Label {
-            Text: %server.magicstorage.ui.autoSaveSeconds;
-            Anchor: (Bottom: 4);
-            Style: $C.@DefaultLabelStyle;
-          }
-
-          $C.@NumberField #AutoSaveSeconds {
-            @Anchor = (Width: 100, Left: 0);
-
-            Format: (MaxDecimalPlaces: 0, Step: 1, MinValue: 5, MaxValue: 3600);
-          }
-        }
       }
 
       Label {

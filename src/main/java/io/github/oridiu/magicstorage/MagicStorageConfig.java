@@ -13,7 +13,6 @@ public class MagicStorageConfig {
 
     public static final int MIN_CAPACITY = 9;
     public static final int MAX_CAPACITY = 90;
-    public static final int MIN_AUTO_SAVE_SECONDS = 5;
 
     public static final BuilderCodec<MagicStorageConfig> CODEC = BuilderCodec.builder(MagicStorageConfig.class, MagicStorageConfig::new)
             .append(new KeyedCodec<>("AllowDepositViaBag", Codec.BOOLEAN),
@@ -29,12 +28,7 @@ public class MagicStorageConfig {
             .append(new KeyedCodec<>("ShowLinkedChest", Codec.BOOLEAN),
                     (config, value) -> config.showLinkedChest = value,
                     config -> config.showLinkedChest)
-            .documentation("If true, a player carrying a linked Magic Bag sees a glow above the linked chest. Only that player sees it.")
-            .add()
-            .append(new KeyedCodec<>("AutoSaveSeconds", Codec.INTEGER),
-                    (config, value) -> config.autoSaveSeconds = value,
-                    config -> config.autoSaveSeconds)
-            .documentation("How often changed chests are written to disk.")
+            .documentation("If true, a player carrying a linked Magic Bag sees sparks rising from the linked chest and its gem glowing. Only that player sees it.")
             .add()
             .build();
 
@@ -42,7 +36,6 @@ public class MagicStorageConfig {
     // Same as a vanilla small chest; two of them make a large chest with 36.
     private int chestCapacity = 18;
     private boolean showLinkedChest = true;
-    private int autoSaveSeconds = 30;
 
     public boolean isAllowDepositViaBag() {
         return allowDepositViaBag;
@@ -71,13 +64,5 @@ public class MagicStorageConfig {
 
     public void setShowLinkedChest(boolean showLinkedChest) {
         this.showLinkedChest = showLinkedChest;
-    }
-
-    public int getAutoSaveSeconds() {
-        return Math.max(MIN_AUTO_SAVE_SECONDS, autoSaveSeconds);
-    }
-
-    public void setAutoSaveSeconds(int autoSaveSeconds) {
-        this.autoSaveSeconds = Math.max(MIN_AUTO_SAVE_SECONDS, autoSaveSeconds);
     }
 }
