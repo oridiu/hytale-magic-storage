@@ -46,3 +46,7 @@ Voraussetzungen: Java 25 (Temurin), IntelliJ IDEA, installiertes Hytale.
 Jeder Push auf `main` und jeder Pull Request baut die Jar automatisch. Sie liegt danach im Lauf unter **Actions → Build → Artifacts** als `MagicStorage`. CI kompiliert gegen `com.hypixel.hytale:Server` in der Version `hytale_build` aus `gradle.properties`.
 
 Für ein Release `version` in `gradle.properties` erhöhen, committen und ein passendes Tag pushen, z. B. `git tag v0.1.0` und `git push origin v0.1.0`. Die Action legt dann ein GitHub-Release mit der Jar an.
+
+## Lizenz
+
+[MIT](LICENSE) © oridiu
