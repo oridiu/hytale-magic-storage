@@ -76,6 +76,16 @@ Every push to `main` and every pull request builds the jar on GitHub Actions. It
 
 To release, bump `version` in `gradle.properties`, commit, and push a matching tag, for example `git tag v0.1.0` and `git push origin v0.1.0`. The workflow then creates a GitHub release with the jar.
 
+The same tag also uploads the jar to CurseForge when the repository secrets `CURSEFORGE_TOKEN` (an upload token from your CurseForge account settings) and `CURSEFORGE_PROJECT_ID` are set. Without them the step is skipped. Optional repository variables:
+
+| Variable | Default | Description |
+|---|---|---|
+| `CURSEFORGE_RELEASE_TYPE` | `beta` | `alpha`, `beta` or `release` |
+| `CURSEFORGE_GAME_VERSION` | `hytale_build` from `gradle.properties` | Name of the Hytale version on CurseForge |
+| `CURSEFORGE_API_URL` | `https://hytale.curseforge.com` | Base URL of the CurseForge upload API |
+
+To test the connection without uploading anything, run the **Build** workflow by hand under **Actions** with **Only test the CurseForge connection** ticked. It lists the game versions CurseForge knows and checks that one matches.
+
 ## License
 
 [MIT](LICENSE) © oridiu
