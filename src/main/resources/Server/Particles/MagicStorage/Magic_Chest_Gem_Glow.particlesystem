@@ -1,0 +1,8 @@
+{
+  "Spawners": [
+    {
+      "SpawnerId": "Magic_Chest_Gem_Glow"
+    }
+  ],
+  "CullDistance": 64.0
+}
