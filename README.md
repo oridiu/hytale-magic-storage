@@ -110,7 +110,7 @@ The release also uploads the jar to CurseForge, with the release notes as change
 | Variable | Default | Description |
 |---|---|---|
 | `CURSEFORGE_RELEASE_TYPE` | `beta` | `alpha`, `beta` or `release` |
-| `CURSEFORGE_GAME_VERSION` | `hytale_build` from `gradle.properties` | Name of the Hytale version on CurseForge |
+| `CURSEFORGE_GAME_VERSION` | `hytale_build` from `gradle.properties`, else the newest version on CurseForge | Name of the Hytale version on CurseForge |
 | `CURSEFORGE_API_URL` | `https://1430699.curseforge.com` | Base URL of the CurseForge upload API (Hytale has no named subdomain; `hytale.curseforge.com` is only the landing page) |
 
 To test the connection without uploading anything, run the **Build** workflow by hand under **Actions** with **Only test the CurseForge connection** ticked. It lists the game versions CurseForge knows and checks that one matches.

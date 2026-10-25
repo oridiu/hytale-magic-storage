@@ -33,6 +33,13 @@ jq -r '.[] | "  \(.id)\t\(.name)\t(slug: \(.slug // "-"))"' versions.json | head
 
 version_id=$(jq -r --arg t "$target" \
   '[.[] | select(.name == $t or .slug == $t)][0].id // empty' versions.json)
+# CurseForge names Hytale versions differently from the server build
+# (e.g. "1.0" vs 0.7.4). Without an explicit CURSEFORGE_GAME_VERSION, fall
+# back to the newest version it knows.
+if [[ -z "$version_id" && -z "${CF_GAME_VERSION:-}" ]]; then
+  read -r version_id target < <(jq -r 'max_by(.id) | "\(.id) \(.name)"' versions.json)
+  echo "::notice::No game version named '$(grep '^hytale_build=' gradle.properties | cut -d= -f2)', using the newest one, '${target}'."
+fi
 if [[ -z "$version_id" ]]; then
   echo "::error::No game version named '${target}'. Set the repository variable CURSEFORGE_GAME_VERSION to one of the names above."
   exit 1
