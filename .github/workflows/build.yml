@@ -104,8 +104,7 @@ jobs:
   # Uploads the released jar to CurseForge, after a release or by hand for
   # an existing one. Needs the secrets CURSEFORGE_TOKEN and
   # CURSEFORGE_PROJECT_ID; skipped without them. Optional repository
-  # variables: CURSEFORGE_GAME_VERSION (default 1.0) and
-  # CURSEFORGE_RELEASE_TYPE (alpha, beta or release; default beta).
+  # variable: CURSEFORGE_RELEASE_TYPE (alpha, beta or release; default beta).
   curseforge:
     if: >-
       always() && (needs.release-please.outputs.release_created == 'true' ||
@@ -116,35 +115,29 @@ jobs:
       TAG: ${{ needs.release-please.outputs.tag_name || inputs.curseforge_tag }}
       HAS_TOKEN: ${{ secrets.CURSEFORGE_TOKEN != '' && secrets.CURSEFORGE_PROJECT_ID != '' }}
     steps:
-      - name: Download jar and release notes
-        id: release
+      # CurseForge's API has no Hytale game versions yet (any game version
+      # is rejected as belonging to another game), so the file is uploaded
+      # without one. hytale.curseforge.com is only the landing page.
+      - name: Upload to CurseForge
         if: env.HAS_TOKEN == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
+          CF_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
+          CF_PROJECT_ID: ${{ secrets.CURSEFORGE_PROJECT_ID }}
+          CF_RELEASE_TYPE: ${{ vars.CURSEFORGE_RELEASE_TYPE || 'beta' }}
         run: |
           gh release download "$TAG" --repo "$GITHUB_REPOSITORY" --pattern '*.jar' --dir dist
-          echo "JAR=$(ls dist/*.jar | head -n 1)" >> "$GITHUB_ENV"
-          {
-            echo 'changelog<<CHANGELOG_EOF'
-            gh release view "$TAG" --repo "$GITHUB_REPOSITORY" --json body --jq .body
-            echo 'CHANGELOG_EOF'
-          } >> "$GITHUB_OUTPUT"
-
-      # Hytale has no named curseforge.com subdomain; uploads go to
-      # 1430699.curseforge.com (hytale.curseforge.com is only the landing page).
-      - name: Upload to CurseForge
-        if: env.HAS_TOKEN == 'true'
-        uses: itsmeow/curseforge-upload@v3.1.2
-        with:
-          token: ${{ secrets.CURSEFORGE_TOKEN }}
-          project_id: ${{ secrets.CURSEFORGE_PROJECT_ID }}
-          game_endpoint: '1430699'
-          game_versions: ${{ vars.CURSEFORGE_GAME_VERSION || '1.0' }}
-          file_path: ${{ env.JAR }}
-          display_name: MagicStorage ${{ env.TAG }}
-          changelog: ${{ steps.release.outputs.changelog }}
-          changelog_type: markdown
-          release_type: ${{ vars.CURSEFORGE_RELEASE_TYPE || 'beta' }}
+          gh release view "$TAG" --repo "$GITHUB_REPOSITORY" --json body --jq .body > changelog.md
+          jq -n --rawfile changelog changelog.md --arg name "MagicStorage ${TAG#v}" --arg type "$CF_RELEASE_TYPE" \
+            '{changelog: $changelog, changelogType: "markdown", displayName: $name, releaseType: $type}' > metadata.json
+          status=$(curl -sS -o response.json -w '%{http_code}' -H "X-Api-Token: ${CF_TOKEN}" \
+            -F "metadata=<metadata.json" -F "file=@$(ls dist/*.jar | head -n 1)" \
+            "https://www.curseforge.com/api/projects/${CF_PROJECT_ID}/upload-file")
+          cat response.json; echo
+          if [[ "$status" -lt 200 || "$status" -ge 300 ]]; then
+            echo "::error::CurseForge upload failed with HTTP ${status}."
+            exit 1
+          fi
 
       - name: Skip without CurseForge secrets
         if: env.HAS_TOKEN != 'true'

@@ -105,12 +105,7 @@ Pull requests are squash merged, so the pull request title becomes the commit me
 
 After each push to `main`, release-please opens or updates a release pull request that bumps `version` in `gradle.properties` and `manifest.json` and adds the new section to `CHANGELOG.md`. Merging it creates the tag (for example `v0.1.0`) and the GitHub release with those notes; the workflow then attaches the jar. Do not bump the version or push tags by hand. To force a version, add a `Release-As: 1.0.0` footer to a commit.
 
-The release also uploads the jar to CurseForge, with the release notes as changelog, using [itsmeow/curseforge-upload](https://github.com/itsmeow/curseforge-upload). It needs the repository secrets `CURSEFORGE_TOKEN` (an upload token from your CurseForge account settings) and `CURSEFORGE_PROJECT_ID`; without them the step is skipped. Optional repository variables:
-
-| Variable | Default | Description |
-|---|---|---|
-| `CURSEFORGE_RELEASE_TYPE` | `beta` | `alpha`, `beta` or `release` |
-| `CURSEFORGE_GAME_VERSION` | `1.0` | Hytale version name(s) on CurseForge, comma-separated |
+The release also uploads the jar to CurseForge, with the release notes as changelog. It needs the repository secrets `CURSEFORGE_TOKEN` (an upload token from your CurseForge account settings) and `CURSEFORGE_PROJECT_ID`; without them the step is skipped. The optional repository variable `CURSEFORGE_RELEASE_TYPE` (`alpha`, `beta` or `release`, default `beta`) sets the release type. CurseForge's API has no Hytale game versions yet, so files are uploaded without one.
 
 To upload an existing release again (for example after a failed upload), run the **Build** workflow by hand under **Actions** and enter its tag, such as `v1.0.0`, in **Upload the jar of an existing release to CurseForge**.
 
