@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/oridiu/hytale-magic-storage/compare/v1.0.0...v1.0.1) (2026-10-25)
+
+
+### Bug Fixes
+
+* create chest storage on place and link so empty chests open via bag ([bb27640](https://github.com/oridiu/hytale-magic-storage/commit/bb27640e2b72b9cb5da81291fa695a8e1c18205a))
+
 ## 1.0.0 (2026-10-25)
 
 
