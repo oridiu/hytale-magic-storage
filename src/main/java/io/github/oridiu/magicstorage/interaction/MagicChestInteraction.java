@@ -74,10 +74,13 @@ public class MagicChestInteraction extends SimpleBlockInteraction {
             return;
         }
         ChestKey key = chest.key(world);
-        SimpleItemContainer container = openStorage(world, chest);
-
         if (MagicItems.isBag(itemInHand)) {
             linkBag(context, key, playerRef);
+            return;
+        }
+        SimpleItemContainer container = openStorage(world, chest);
+        if (container == null) {
+            playerRef.sendMessage(Message.translation("server.magicstorage.chest.unreadable").color("#ff5555"));
             return;
         }
 
@@ -111,6 +114,7 @@ public class MagicChestInteraction extends SimpleBlockInteraction {
      * Returns the chest's storage. For a large chest this also joins the two
      * halves, in case that did not happen when it was placed.
      */
+    @Nullable
     public static SimpleItemContainer openStorage(@Nonnull World world, @Nonnull ChestBlock chest) {
         MagicStoragePlugin plugin = MagicStoragePlugin.getInstance();
         ChestKey partner = chest.partnerKey(world);

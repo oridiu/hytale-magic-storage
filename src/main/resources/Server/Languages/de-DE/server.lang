@@ -8,6 +8,7 @@ magicstorage.bag.linked = Dein Magischer Beutel ist jetzt mit dieser Magischen T
 magicstorage.bag.alreadyLinked = Dein Magischer Beutel ist bereits mit dieser Magischen Truhe verknüpft.
 magicstorage.bag.notLinked = Dieser Magische Beutel ist noch nicht verknüpft. Benutze ihn zuerst an einer Magischen Truhe.
 magicstorage.bag.chestMissing = Die verknüpfte Magische Truhe existiert nicht mehr. Verknüpfe den Beutel mit einer anderen.
+magicstorage.chest.unreadable = Diese Magische Truhe konnte nicht gelesen werden. Die Datei bleibt unverändert.
 magicstorage.bag.onlyOne = Du kannst nur einen Magischen Beutel tragen.
 magicstorage.commands.desc = Einstellungen der Magic-Storage-Mod
 magicstorage.commands.settings.desc = Öffnet das Einstellungsfenster
