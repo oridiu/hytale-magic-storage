@@ -6,10 +6,10 @@ on:
   pull_request:
   workflow_dispatch:
     inputs:
-      curseforge_check:
-        description: 'Only test the CurseForge connection (lists game versions, uploads nothing)'
-        type: boolean
-        default: false
+      curseforge_tag:
+        description: 'Upload the jar of an existing release to CurseForge, e.g. v1.0.0'
+        type: string
+        default: ''
 
 permissions:
   contents: read
@@ -101,53 +101,51 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: gh release upload "$TAG" dist/*.jar --clobber
 
-  # Uploads the released jar to CurseForge. Needs the secrets
-  # CURSEFORGE_TOKEN and CURSEFORGE_PROJECT_ID; skipped without them.
-  # Optional repository variables: CURSEFORGE_API_URL, CURSEFORGE_GAME_VERSION,
+  # Uploads the released jar to CurseForge, after a release or by hand for
+  # an existing one. Needs the secrets CURSEFORGE_TOKEN and
+  # CURSEFORGE_PROJECT_ID; skipped without them. Optional repository
+  # variables: CURSEFORGE_GAME_VERSION (default 1.0) and
   # CURSEFORGE_RELEASE_TYPE (alpha, beta or release; default beta).
   curseforge:
-    if: needs.release-please.outputs.release_created == 'true'
+    if: >-
+      always() && (needs.release-please.outputs.release_created == 'true' ||
+      (github.event_name == 'workflow_dispatch' && inputs.curseforge_tag != ''))
     needs: [release-please, release]
     runs-on: ubuntu-latest
     env:
-      TAG: ${{ needs.release-please.outputs.tag_name }}
-      CF_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
-      CF_PROJECT_ID: ${{ secrets.CURSEFORGE_PROJECT_ID }}
-      CF_API: ${{ vars.CURSEFORGE_API_URL || 'https://1430699.curseforge.com' }}
-      CF_GAME_VERSION: ${{ vars.CURSEFORGE_GAME_VERSION }}
-      CF_RELEASE_TYPE: ${{ vars.CURSEFORGE_RELEASE_TYPE || 'beta' }}
+      TAG: ${{ needs.release-please.outputs.tag_name || inputs.curseforge_tag }}
+      HAS_TOKEN: ${{ secrets.CURSEFORGE_TOKEN != '' && secrets.CURSEFORGE_PROJECT_ID != '' }}
     steps:
-      - uses: actions/checkout@v5
-
-      - uses: actions/download-artifact@v4
-        with:
-          name: MagicStorage
-          path: dist
-
-      # The release notes are the new CHANGELOG.md section.
-      - name: Read release notes
+      - name: Download jar and release notes
+        id: release
+        if: env.HAS_TOKEN == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          gh release download "$TAG" --repo "$GITHUB_REPOSITORY" --pattern '*.jar' --dir dist
+          echo "JAR=$(ls dist/*.jar | head -n 1)" >> "$GITHUB_ENV"
           {
-            echo 'CHANGELOG<<CHANGELOG_EOF'
-            gh release view "$TAG" --json body --jq .body || echo "Release $TAG"
+            echo 'changelog<<CHANGELOG_EOF'
+            gh release view "$TAG" --repo "$GITHUB_REPOSITORY" --json body --jq .body
             echo 'CHANGELOG_EOF'
-          } >> "$GITHUB_ENV"
+          } >> "$GITHUB_OUTPUT"
 
+      # Hytale has no named curseforge.com subdomain; uploads go to
+      # 1430699.curseforge.com (hytale.curseforge.com is only the landing page).
       - name: Upload to CurseForge
-        run: .github/scripts/curseforge.sh upload "$(ls dist/*.jar | head -n 1)" "$TAG"
+        if: env.HAS_TOKEN == 'true'
+        uses: itsmeow/curseforge-upload@v3.1.2
+        with:
+          token: ${{ secrets.CURSEFORGE_TOKEN }}
+          project_id: ${{ secrets.CURSEFORGE_PROJECT_ID }}
+          game_endpoint: '1430699'
+          game_versions: ${{ vars.CURSEFORGE_GAME_VERSION || '1.0' }}
+          file_path: ${{ env.JAR }}
+          display_name: MagicStorage ${{ env.TAG }}
+          changelog: ${{ steps.release.outputs.changelog }}
+          changelog_type: markdown
+          release_type: ${{ vars.CURSEFORGE_RELEASE_TYPE || 'beta' }}
 
-  curseforge-check:
-    if: github.event_name == 'workflow_dispatch' && inputs.curseforge_check
-    runs-on: ubuntu-latest
-    env:
-      CF_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
-      CF_PROJECT_ID: ${{ secrets.CURSEFORGE_PROJECT_ID }}
-      CF_API: ${{ vars.CURSEFORGE_API_URL || 'https://1430699.curseforge.com' }}
-      CF_GAME_VERSION: ${{ vars.CURSEFORGE_GAME_VERSION }}
-    steps:
-      - uses: actions/checkout@v5
-
-      - name: Test CurseForge connection
-        run: .github/scripts/curseforge.sh check
+      - name: Skip without CurseForge secrets
+        if: env.HAS_TOKEN != 'true'
+        run: echo "::notice::CURSEFORGE_TOKEN or CURSEFORGE_PROJECT_ID not set, skipping CurseForge."
