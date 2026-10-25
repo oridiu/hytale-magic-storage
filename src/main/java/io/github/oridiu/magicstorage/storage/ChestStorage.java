@@ -188,7 +188,14 @@ public class ChestStorage {
                 }
                 // Copy under the container's lock, then encode the snapshot.
                 SimpleItemContainer snapshot = new SimpleItemContainer(container);
-                BsonDocument document = SimpleItemContainer.CODEC.encode(snapshot).asDocument();
+                BsonDocument document;
+                try {
+                    document = SimpleItemContainer.CODEC.encode(snapshot).asDocument();
+                } catch (RuntimeException e) {
+                    dirty.add(key);
+                    logger.at(Level.SEVERE).withCause(e).log("[MagicStorage] Could not encode chest %s", key);
+                    continue;
+                }
                 Path file = file(key);
                 pendingWrites.compute(key, (k, previous) -> (previous != null ? previous : CompletableFuture.<Void>completedFuture(null))
                         .handle((result, error) -> null)
