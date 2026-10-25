@@ -27,6 +27,8 @@ import org.joml.Vector3d;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 
 /** A player may carry only one Magic Bag. */
 public final class OneBagSystems {
@@ -39,6 +41,17 @@ public final class OneBagSystems {
 
     static int countBags(@Nonnull CombinedItemContainer inventory) {
         return inventory.countItemStacks(MagicItems::isBag);
+    }
+
+    /** Index of the bag to keep, in the order the bags were found. A linked bag wins over an earlier unlinked one. */
+    static int keptBag(boolean[] linked) {
+        int keep = -1;
+        for (int i = 0; i < linked.length; i++) {
+            if (keep < 0 || (linked[i] && !linked[keep])) {
+                keep = i;
+            }
+        }
+        return keep;
     }
 
     /** Drops every bag beyond the first one. A linked bag wins over an unlinked one. */
@@ -58,18 +71,23 @@ public final class OneBagSystems {
         ) {
             Ref<EntityStore> ref = archetypeChunk.getReferenceTo(index);
             CombinedItemContainer inventory = InventoryComponent.getCombined(commandBuffer, ref, InventoryComponent.EVERYTHING);
-            if (countBags(inventory) <= 1) {
-                return;
-            }
-
-            short keep = -1;
+            List<Short> slots = new ArrayList<>();
+            List<Boolean> linkedBags = new ArrayList<>();
             for (short slot = 0; slot < inventory.getCapacity(); slot++) {
                 ItemStack stack = inventory.getItemStack(slot);
-                if (MagicItems.isBag(stack) && (keep < 0 || stack.getFromMetadataOrNull(ChestKey.BAG_LINK) != null
-                        && inventory.getItemStack(keep).getFromMetadataOrNull(ChestKey.BAG_LINK) == null)) {
-                    keep = slot;
+                if (MagicItems.isBag(stack)) {
+                    slots.add(slot);
+                    linkedBags.add(stack.getFromMetadataOrNull(ChestKey.BAG_LINK) != null);
                 }
             }
+            if (slots.size() <= 1) {
+                return;
+            }
+            boolean[] linked = new boolean[linkedBags.size()];
+            for (int i = 0; i < linked.length; i++) {
+                linked[i] = linkedBags.get(i);
+            }
+            short keep = slots.get(keptBag(linked));
 
             TransformComponent transform = commandBuffer.getComponent(ref, TransformComponent.getComponentType());
             for (short slot = 0; slot < inventory.getCapacity(); slot++) {
