@@ -79,13 +79,15 @@ public class MagicChestInteraction extends SimpleBlockInteraction {
             return;
         }
         ChestKey key = chest.key(world);
-        if (MagicItems.isBag(itemInHand)) {
-            linkBag(context, key, playerRef);
-            return;
-        }
         SimpleItemContainer container = openStorage(world, chest);
         if (container == null) {
             playerRef.sendMessage(Message.translation("server.magicstorage.chest.unreadable").color("#ff5555"));
+            return;
+        }
+        if (MagicItems.isBag(itemInHand)) {
+            // The chest may never have been opened; save it now so the bag finds it.
+            MagicStoragePlugin.getInstance().getStorage().saveDirty();
+            linkBag(context, key, playerRef);
             return;
         }
 

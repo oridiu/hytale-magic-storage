@@ -3,6 +3,7 @@ package io.github.oridiu.magicstorage.system;
 import com.hypixel.hytale.component.Archetype;
 import com.hypixel.hytale.component.ArchetypeChunk;
 import com.hypixel.hytale.component.CommandBuffer;
+import com.hypixel.hytale.component.ComponentType;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.component.query.Query;
@@ -11,7 +12,7 @@ import com.hypixel.hytale.server.core.asset.type.blocktype.config.RotationTuple;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.inventory.InventoryComponent;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
-import com.hypixel.hytale.server.core.inventory.container.CombinedItemContainer;
+import com.hypixel.hytale.server.core.inventory.container.ItemContainer;
 import com.hypixel.hytale.server.core.modules.entity.component.TransformComponent;
 import com.hypixel.hytale.server.core.universe.world.ParticleUtil;
 import com.hypixel.hytale.server.core.universe.world.World;
@@ -65,7 +66,7 @@ public class LinkedChestMarkerSystem extends DelayedEntitySystem<EntityStore> {
             return;
         }
         Ref<EntityStore> ref = archetypeChunk.getReferenceTo(index);
-        ChestKey link = linkedChest(InventoryComponent.getCombined(commandBuffer, ref, InventoryComponent.EVERYTHING));
+        ChestKey link = linkedChest(archetypeChunk, index);
         if (link == null) {
             return;
         }
@@ -98,14 +99,30 @@ public class LinkedChestMarkerSystem extends DelayedEntitySystem<EntityStore> {
         }
     }
 
+    /**
+     * The chest the bag this player carries right now is linked to. Reads the
+     * inventories straight from the player's components on every tick, so a
+     * bag that was just handed to another player marks the chest for its new
+     * holder only.
+     */
     @Nullable
-    private static ChestKey linkedChest(@Nonnull CombinedItemContainer inventory) {
-        for (short slot = 0; slot < inventory.getCapacity(); slot++) {
-            ItemStack stack = inventory.getItemStack(slot);
-            if (MagicItems.isBag(stack)) {
-                ChestKey link = stack.getFromMetadataOrNull(ChestKey.BAG_LINK);
-                if (link != null) {
-                    return link;
+    private static ChestKey linkedChest(@Nonnull ArchetypeChunk<EntityStore> archetypeChunk, int index) {
+        for (ComponentType<EntityStore, ? extends InventoryComponent> type : InventoryComponent.EVERYTHING) {
+            if (!archetypeChunk.getArchetype().contains(type)) {
+                continue;
+            }
+            InventoryComponent component = archetypeChunk.getComponent(index, type);
+            ItemContainer inventory = component != null ? component.getInventory() : null;
+            if (inventory == null) {
+                continue;
+            }
+            for (short slot = 0; slot < inventory.getCapacity(); slot++) {
+                ItemStack stack = inventory.getItemStack(slot);
+                if (MagicItems.isBag(stack)) {
+                    ChestKey link = stack.getFromMetadataOrNull(ChestKey.BAG_LINK);
+                    if (link != null) {
+                        return link;
+                    }
                 }
             }
         }

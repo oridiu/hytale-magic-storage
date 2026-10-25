@@ -20,9 +20,10 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
- * Placing a Magic Chest next to another one turns both into a large chest
- * (the block rules in Magic_Chest.json do that). Once the blocks are set,
- * this joins the two chests' contents.
+ * Creates the storage of a newly placed Magic Chest, so bags can be linked to
+ * it before anything was put in. Placing a Magic Chest next to another one
+ * turns both into a large chest (the block rules in Magic_Chest.json do that);
+ * once the blocks are set, this joins the two chests' contents.
  */
 public class ChestPlaceSystem extends EntityEventSystem<EntityStore, PlaceBlockEvent> {
 
@@ -47,7 +48,7 @@ public class ChestPlaceSystem extends EntityEventSystem<EntityStore, PlaceBlockE
         // The event comes before the block is set; check once the placement is done.
         world.execute(() -> {
             ChestBlock chest = ChestBlock.find(world, pos);
-            if (chest != null && chest.isLarge()) {
+            if (chest != null) {
                 MagicChestInteraction.openStorage(world, chest);
                 MagicStoragePlugin.getInstance().getStorage().saveDirty();
             }
