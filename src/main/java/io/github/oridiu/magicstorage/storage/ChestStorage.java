@@ -71,9 +71,10 @@ public class ChestStorage {
 
     /**
      * Returns the chest's container, loading it from disk or creating an empty
-     * one, and grows it to at least {@code capacity} slots.
+     * one, and grows it to at least {@code capacity} slots. Null when the save
+     * file is there but cannot be read; that file is left as it is.
      */
-    @Nonnull
+    @Nullable
     public synchronized SimpleItemContainer getOrCreate(@Nonnull ChestKey key, short capacity) {
         ChestKey resolved = resolve(key);
         SimpleItemContainer container = containers.computeIfAbsent(resolved, k -> {
@@ -82,10 +83,16 @@ public class ChestStorage {
                 if (loaded != null) {
                     return watch(k, loaded);
                 }
+                if (Files.exists(file(k))) {
+                    return null;
+                }
             }
             dirty.add(k);
             return watch(k, new SimpleItemContainer(capacity));
         });
+        if (container == null) {
+            return null;
+        }
         if (container.getCapacity() >= capacity) {
             return container;
         }
@@ -99,13 +106,16 @@ public class ChestStorage {
      * Joins two chests into one large chest stored under {@code origin}. Does
      * nothing if they are joined already. Bags linked to either half keep working.
      */
-    @Nonnull
+    @Nullable
     public synchronized SimpleItemContainer merge(@Nonnull ChestKey origin, @Nonnull ChestKey partner, short capacity) {
         if (origin.equals(links.get(partner))) {
             return getOrCreate(origin, capacity);
         }
         SimpleItemContainer main = get(origin);
         SimpleItemContainer other = get(partner);
+        if ((main == null && Files.exists(file(resolve(origin)))) || (other == null && Files.exists(file(resolve(partner))))) {
+            return null;
+        }
         int used = countUsed(main) + countUsed(other);
         SimpleItemContainer merged = new SimpleItemContainer((short) Math.max(capacity, used));
         if (main != null) {
