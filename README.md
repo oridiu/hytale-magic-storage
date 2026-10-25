@@ -25,7 +25,7 @@ Tired of running back to base from the Forgotten Temple? Magic Storage is a Hyta
 - **Large chest:** place two Magic Chests side by side, facing the same way, and they join into a Large Magic Chest with twice the slots, like vanilla chests. Their contents are combined, and bags linked to either half open the whole chest.
 - **Find your chest:** while you carry a linked bag, blue sparks rise from the linked chest and the gem on its front glows. Only you see your own chest's glow.
 - **Breaking the chest:** its contents drop, and linked bags report that the chest no longer exists. Breaking either half of a large chest drops both Magic Chests.
-- **Languages:** English and German.
+- **Languages:** English.
 
 ## Installation
 
