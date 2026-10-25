@@ -20,10 +20,10 @@ fi
 api="${CF_API%/}"
 target="${CF_GAME_VERSION:-$(grep '^hytale_build=' gradle.properties | cut -d= -f2)}"
 
-status=$(curl -sS -o versions.json -w '%{http_code}' \
+read -r status location < <(curl -sS -o versions.json -w '%{http_code} %{redirect_url}\n' \
   -H "X-Api-Token: ${CF_TOKEN}" "${api}/api/game/versions")
 if [[ "$status" != 200 ]]; then
-  echo "::error::GET ${api}/api/game/versions returned HTTP ${status}. Check CURSEFORGE_API_URL and the token."
+  echo "::error::GET ${api}/api/game/versions returned HTTP ${status}${location:+ (redirect to ${location})}. Check CURSEFORGE_API_URL and the token."
   head -c 2000 versions.json; echo
   exit 1
 fi
