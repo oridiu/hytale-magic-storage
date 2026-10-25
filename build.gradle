@@ -57,9 +57,17 @@ dependencies {
     if (hasLocalServer) {
         compileOnly(files(serverJar))
         devRuntimeOnly(files(serverJar))
+        testImplementation(files(serverJar))
     } else {
         compileOnly("com.hypixel.hytale:Server:$hytale_build")
+        testImplementation("com.hypixel.hytale:Server:$hytale_build")
     }
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.11.4'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.11.4'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
 }
 
 // Writes Version and IncludesAssetPack from gradle.properties into the
