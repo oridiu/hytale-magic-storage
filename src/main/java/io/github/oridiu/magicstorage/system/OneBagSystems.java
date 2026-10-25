@@ -71,6 +71,9 @@ public final class OneBagSystems {
         ) {
             Ref<EntityStore> ref = archetypeChunk.getReferenceTo(index);
             CombinedItemContainer inventory = InventoryComponent.getCombined(commandBuffer, ref, InventoryComponent.EVERYTHING);
+            if (countBags(inventory) <= 1) {
+                return;
+            }
             List<Short> slots = new ArrayList<>();
             List<Boolean> linkedBags = new ArrayList<>();
             for (short slot = 0; slot < inventory.getCapacity(); slot++) {
