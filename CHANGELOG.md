@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.2](https://github.com/oridiu/hytale-magic-storage/compare/v1.0.1...v1.0.2) (2026-10-25)
+
+
+### Bug Fixes
+
+* show item names in the game's language for German clients ([eae45ae](https://github.com/oridiu/hytale-magic-storage/commit/eae45ae9a681b13b4389c9ea8d840dad46fdf259))
+
 ## [1.0.1](https://github.com/oridiu/hytale-magic-storage/compare/v1.0.0...v1.0.1) (2026-10-25)
 
 
