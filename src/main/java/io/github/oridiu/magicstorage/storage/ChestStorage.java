@@ -39,6 +39,8 @@ public class ChestStorage {
     private final Map<ChestKey, SimpleItemContainer> containers = new ConcurrentHashMap<>();
     private final Set<ChestKey> dirty = ConcurrentHashMap.newKeySet();
     private final Map<ChestKey, CompletableFuture<Void>> pendingWrites = new ConcurrentHashMap<>();
+    /** Delete still in flight for this chest. A newer delete bumps the number; only that delete clears it. */
+    private final Map<ChestKey, Integer> deleting = new ConcurrentHashMap<>();
     /** Second half of a large chest -> its main block. */
     private final Map<ChestKey, ChestKey> links = new ConcurrentHashMap<>();
     private CompletableFuture<Void> pendingLinksWrite = CompletableFuture.completedFuture(null);
@@ -75,9 +77,11 @@ public class ChestStorage {
     public synchronized SimpleItemContainer getOrCreate(@Nonnull ChestKey key, short capacity) {
         ChestKey resolved = resolve(key);
         SimpleItemContainer container = containers.computeIfAbsent(resolved, k -> {
-            SimpleItemContainer loaded = load(k);
-            if (loaded != null) {
-                return watch(k, loaded);
+            if (!deleting.containsKey(k)) {
+                SimpleItemContainer loaded = load(k);
+                if (loaded != null) {
+                    return watch(k, loaded);
+                }
             }
             dirty.add(k);
             return watch(k, new SimpleItemContainer(capacity));
@@ -130,13 +134,13 @@ public class ChestStorage {
 
     /** Returns the chest's container, or null if no such chest exists (anymore). */
     @Nullable
-    public SimpleItemContainer get(@Nonnull ChestKey requested) {
+    public synchronized SimpleItemContainer get(@Nonnull ChestKey requested) {
         ChestKey key = resolve(requested);
         SimpleItemContainer container = containers.get(key);
         if (container != null) {
             return container;
         }
-        if (!Files.exists(file(key))) {
+        if (deleting.containsKey(key) || !Files.exists(file(key))) {
             return null;
         }
         return containers.computeIfAbsent(key, k -> {
@@ -173,20 +177,23 @@ public class ChestStorage {
      */
     public void saveDirty() {
         for (ChestKey key : List.copyOf(dirty)) {
-            if (!dirty.remove(key)) {
-                continue;
+            // Hold the lock through the queue so a delete cannot land ahead of this snapshot.
+            synchronized (this) {
+                if (!dirty.remove(key)) {
+                    continue;
+                }
+                SimpleItemContainer container = containers.get(key);
+                if (container == null) {
+                    continue;
+                }
+                // Copy under the container's lock, then encode the snapshot.
+                SimpleItemContainer snapshot = new SimpleItemContainer(container);
+                BsonDocument document = SimpleItemContainer.CODEC.encode(snapshot).asDocument();
+                Path file = file(key);
+                pendingWrites.compute(key, (k, previous) -> (previous != null ? previous : CompletableFuture.<Void>completedFuture(null))
+                        .handle((result, error) -> null)
+                        .thenCompose(ignored -> BsonUtil.writeDocument(file, document)));
             }
-            SimpleItemContainer container = containers.get(key);
-            if (container == null) {
-                continue;
-            }
-            // Copy under the container's lock, then encode the snapshot.
-            SimpleItemContainer snapshot = new SimpleItemContainer(container);
-            BsonDocument document = SimpleItemContainer.CODEC.encode(snapshot).asDocument();
-            Path file = file(key);
-            pendingWrites.compute(key, (k, previous) -> (previous != null ? previous : CompletableFuture.<Void>completedFuture(null))
-                    .handle((result, error) -> null)
-                    .thenCompose(ignored -> BsonUtil.writeDocument(file, document)));
         }
     }
 
@@ -218,10 +225,12 @@ public class ChestStorage {
 
     private void deleteFiles(@Nonnull ChestKey key) {
         Path file = file(key);
+        int generation = deleting.merge(key, 1, Integer::sum);
         pendingWrites.compute(key, (k, previous) -> (previous != null ? previous : CompletableFuture.<Void>completedFuture(null))
                 .handle((result, error) -> {
                     deleteQuietly(file);
                     deleteQuietly(file.resolveSibling(file.getFileName() + ".bak"));
+                    deleting.remove(key, generation);
                     return null;
                 }));
     }
