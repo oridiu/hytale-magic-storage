@@ -113,7 +113,7 @@ jobs:
       TAG: ${{ needs.release-please.outputs.tag_name }}
       CF_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
       CF_PROJECT_ID: ${{ secrets.CURSEFORGE_PROJECT_ID }}
-      CF_API: ${{ vars.CURSEFORGE_API_URL || 'https://hytale.curseforge.com' }}
+      CF_API: ${{ vars.CURSEFORGE_API_URL || 'https://1430699.curseforge.com' }}
       CF_GAME_VERSION: ${{ vars.CURSEFORGE_GAME_VERSION }}
       CF_RELEASE_TYPE: ${{ vars.CURSEFORGE_RELEASE_TYPE || 'beta' }}
     steps:
@@ -144,7 +144,7 @@ jobs:
     env:
       CF_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
       CF_PROJECT_ID: ${{ secrets.CURSEFORGE_PROJECT_ID }}
-      CF_API: ${{ vars.CURSEFORGE_API_URL || 'https://hytale.curseforge.com' }}
+      CF_API: ${{ vars.CURSEFORGE_API_URL || 'https://1430699.curseforge.com' }}
       CF_GAME_VERSION: ${{ vars.CURSEFORGE_GAME_VERSION }}
     steps:
       - uses: actions/checkout@v5
