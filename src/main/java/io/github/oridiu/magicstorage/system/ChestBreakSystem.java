@@ -16,7 +16,9 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import io.github.oridiu.magicstorage.MagicItems;
 import io.github.oridiu.magicstorage.MagicStoragePlugin;
 import com.hypixel.hytale.server.core.universe.world.World;
+import io.github.oridiu.magicstorage.interaction.MagicChestInteraction;
 import io.github.oridiu.magicstorage.storage.ChestBlock;
+import io.github.oridiu.magicstorage.storage.ChestKey;
 import org.joml.Vector3d;
 import org.joml.Vector3i;
 
@@ -52,7 +54,9 @@ public class ChestBreakSystem extends EntityEventSystem<EntityStore, BreakBlockE
         if (chest == null) {
             return;
         }
-        List<ItemStack> items = MagicStoragePlugin.getInstance().getStorage().remove(chest.key(world));
+        ChestKey key = chest.key(world);
+        MagicChestInteraction.clearViewers(key);
+        List<ItemStack> items = MagicStoragePlugin.getInstance().getStorage().remove(key);
         if (items.isEmpty()) {
             return;
         }
