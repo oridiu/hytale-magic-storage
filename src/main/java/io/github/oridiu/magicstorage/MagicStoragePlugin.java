@@ -7,6 +7,7 @@ import com.hypixel.hytale.server.core.util.Config;
 import io.github.oridiu.magicstorage.command.MagicStorageCommand;
 import io.github.oridiu.magicstorage.interaction.MagicBagInteraction;
 import io.github.oridiu.magicstorage.interaction.MagicChestInteraction;
+import io.github.oridiu.magicstorage.storage.ChestKey;
 import io.github.oridiu.magicstorage.storage.ChestStorage;
 import io.github.oridiu.magicstorage.system.ChestBreakSystem;
 import io.github.oridiu.magicstorage.system.ChestPlaceSystem;
@@ -17,6 +18,7 @@ import io.github.oridiu.magicstorage.system.OneBagSystems;
 
 import javax.annotation.Nonnull;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.logging.Level;
@@ -62,7 +64,9 @@ public class MagicStoragePlugin extends JavaPlugin {
 
     @Override
     protected void setup() {
-        storage = new ChestStorage(getDataDirectory().resolve("chests"), getLogger());
+        Path chests = getDataDirectory().resolve("chests");
+        ChestKey.setChestDirectory(chests);
+        storage = new ChestStorage(chests, getLogger());
 
         getCodecRegistry(Interaction.CODEC).register(MagicChestInteraction.TYPE, MagicChestInteraction.class, MagicChestInteraction.CODEC);
         getCodecRegistry(Interaction.CODEC).register(MagicBagInteraction.TYPE, MagicBagInteraction.class, MagicBagInteraction.CODEC);
