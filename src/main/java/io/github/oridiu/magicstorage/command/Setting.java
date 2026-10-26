@@ -21,7 +21,10 @@ enum Setting {
             (config, value) -> config.setChestCapacity(value)),
     SHOW_LINKED_CHEST("ShowLinkedChest", "glow", true,
             config -> String.valueOf(config.isShowLinkedChest()),
-            (config, value) -> config.setShowLinkedChest(value != 0));
+            (config, value) -> config.setShowLinkedChest(value != 0)),
+    CRAFT_FROM_BAG("CraftFromBag", "craft", true,
+            config -> String.valueOf(config.isCraftFromBag()),
+            (config, value) -> config.setCraftFromBag(value != 0));
 
     final String key;
     final String shortName;

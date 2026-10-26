@@ -30,12 +30,18 @@ public class MagicStorageConfig {
                     config -> config.showLinkedChest)
             .documentation("If true, a player carrying a linked Magic Bag sees sparks rising from the linked chest and its gem glowing. Only that player sees it.")
             .add()
+            .append(new KeyedCodec<>("CraftFromBag", Codec.BOOLEAN),
+                    (config, value) -> config.craftFromBag = value,
+                    config -> config.craftFromBag)
+            .documentation("If true, crafting benches can use the items in the chest a player's Magic Bag is linked to, like the chests next to the bench.")
+            .add()
             .build();
 
     private boolean allowDepositViaBag = true;
     // Same as a vanilla small chest; two of them make a large chest with 36.
     private int chestCapacity = 18;
     private boolean showLinkedChest = true;
+    private boolean craftFromBag = true;
 
     public boolean isAllowDepositViaBag() {
         return allowDepositViaBag;
@@ -64,5 +70,13 @@ public class MagicStorageConfig {
 
     public void setShowLinkedChest(boolean showLinkedChest) {
         this.showLinkedChest = showLinkedChest;
+    }
+
+    public boolean isCraftFromBag() {
+        return craftFromBag;
+    }
+
+    public void setCraftFromBag(boolean craftFromBag) {
+        this.craftFromBag = craftFromBag;
     }
 }
