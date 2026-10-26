@@ -23,6 +23,7 @@ Tired of running back to base from the Forgotten Temple? Magic Storage is a Hyta
 - **One bag per player:** a second bag is dropped again, and you cannot craft another one while you carry a bag.
 - **Death:** the bag stays in your inventory.
 - **Large chest:** place two Magic Chests side by side, facing the same way, and they join into a Large Magic Chest with twice the slots, like vanilla chests. Their contents are combined, and bags linked to either half open the whole chest.
+- **Craft from the bag:** while you carry a linked bag, crafting benches (e.g. the Goblin Workbench) can use the items in the linked chest, just like chests standing next to the bench. Can be turned off with `CraftFromBag`.
 - **Find your chest:** while you carry a linked bag, blue sparks rise from the linked chest and the gem on its front glows. Only you see your own chest's glow.
 - **Breaking the chest:** its contents drop, and linked bags report that the chest no longer exists. Breaking either half of a large chest drops both Magic Chests.
 - **Languages:** English.
@@ -46,6 +47,7 @@ On first start the server creates `mods/oridiu_MagicStorage/config.json`:
 | `AllowDepositViaBag` | `true` | Set to `false` to only allow taking items out through the bag, not putting them in |
 | `ChestCapacity` | `18` | Slots of a Magic Chest, same as a vanilla chest (9 to 90). A large chest has twice as many. Existing chests take the new size the next time they are opened; lowering it only removes empty slots at the end, never items |
 | `ShowLinkedChest` | `true` | Show sparks and a glowing gem on the chest a player's bag is linked to |
+| `CraftFromBag` | `true` | Let crafting benches use the items in the chest a player's bag is linked to |
 
 Chest contents are stored in `mods/oridiu_MagicStorage/chests/`, one file per chest. A chest is saved when its window closes, whenever the world saves, and when the server stops. `links.json` next to it records which positions belong to a large chest.
 
@@ -57,7 +59,7 @@ Operators (or anyone with the plugin's command permission) can change the settin
 |---|---|
 | `/magicstorage settings` | Opens a settings window |
 | `/magicstorage show` | Lists the current settings |
-| `/magicstorage set <setting> <value>` | Changes one setting, e.g. `/magicstorage set deposit false` or `/magicstorage set capacity 27`. Short names: `deposit`, `capacity`, `glow` |
+| `/magicstorage set <setting> <value>` | Changes one setting, e.g. `/magicstorage set deposit false` or `/magicstorage set capacity 27`. Short names: `deposit`, `capacity`, `glow`, `craft` |
 | `/magicstorage reload` | Reads `config.json` again after editing it by hand |
 
 `/ms` works as a short form of `/magicstorage`.

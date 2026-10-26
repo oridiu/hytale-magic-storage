@@ -23,6 +23,11 @@ $C.@PageOverlay {
 
       $C.@CheckBoxWithLabel #ShowLinkedChest {
         @Text = %server.magicstorage.ui.showLinkedChest;
+        Anchor: (Bottom: 12);
+      }
+
+      $C.@CheckBoxWithLabel #CraftFromBag {
+        @Text = %server.magicstorage.ui.craftFromBag;
         Anchor: (Bottom: 16);
       }
 

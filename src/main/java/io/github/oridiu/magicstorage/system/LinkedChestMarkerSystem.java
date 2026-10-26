@@ -106,7 +106,7 @@ public class LinkedChestMarkerSystem extends DelayedEntitySystem<EntityStore> {
      * holder only.
      */
     @Nullable
-    private static ChestKey linkedChest(@Nonnull ArchetypeChunk<EntityStore> archetypeChunk, int index) {
+    static ChestKey linkedChest(@Nonnull ArchetypeChunk<EntityStore> archetypeChunk, int index) {
         for (ComponentType<EntityStore, ? extends InventoryComponent> type : InventoryComponent.EVERYTHING) {
             if (!archetypeChunk.getArchetype().contains(type)) {
                 continue;

@@ -9,6 +9,7 @@ import io.github.oridiu.magicstorage.interaction.MagicBagInteraction;
 import io.github.oridiu.magicstorage.interaction.MagicChestInteraction;
 import io.github.oridiu.magicstorage.storage.ChestKey;
 import io.github.oridiu.magicstorage.storage.ChestStorage;
+import io.github.oridiu.magicstorage.system.BagCraftingSystem;
 import io.github.oridiu.magicstorage.system.ChestBreakSystem;
 import io.github.oridiu.magicstorage.system.ChestPlaceSystem;
 import io.github.oridiu.magicstorage.system.ChestSaveSystem;
@@ -74,6 +75,7 @@ public class MagicStoragePlugin extends JavaPlugin {
         getEntityStoreRegistry().registerSystem(new ChestBreakSystem());
         getEntityStoreRegistry().registerSystem(new ChestPlaceSystem());
         getEntityStoreRegistry().registerSystem(new LinkedChestMarkerSystem());
+        getEntityStoreRegistry().registerSystem(new BagCraftingSystem());
         getChunkStoreRegistry().registerSystem(new ChestSaveSystem());
         getEntityStoreRegistry().registerSystem(new OneBagSystems.LimitInventory());
         getEntityStoreRegistry().registerSystem(new OneBagSystems.BlockCrafting());
