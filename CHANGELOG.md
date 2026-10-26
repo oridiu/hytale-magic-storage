@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.1.0](https://github.com/oridiu/hytale-magic-storage/compare/v1.0.2...v1.1.0) (2026-10-26)
+
+
+### Features
+
+* add the system that hands the linked chest to crafting benches ([ba5e048](https://github.com/oridiu/hytale-magic-storage/commit/ba5e0483b6fc0b0b8dbdba560da4c3d39f683a6e))
+* let crafting benches use items from the linked Magic Chest ([1fcfe57](https://github.com/oridiu/hytale-magic-storage/commit/1fcfe57ace743c53505d74a74ae8d84d5f7eafd7))
+
+
+### Bug Fixes
+
+* size a large chest by used slots when joining a full chest ([6dc4083](https://github.com/oridiu/hytale-magic-storage/commit/6dc4083d39e61c9e8d7d7c2cbfd172c8582ef3b8))
+
 ## [1.0.2](https://github.com/oridiu/hytale-magic-storage/compare/v1.0.1...v1.0.2) (2026-10-25)
 
 
