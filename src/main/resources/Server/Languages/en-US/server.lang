@@ -29,4 +29,4 @@ magicstorage.ui.title = Magic Storage
 magicstorage.ui.allowDeposit = Players can put items in through the Magic Bag
 magicstorage.ui.showLinkedChest = Make the linked chest glow for its bag owner
 magicstorage.ui.chestCapacity = Slots per chest
-magicstorage.ui.capacityHint = A large chest has twice as many slots. Chests grow, they never shrink.
+magicstorage.ui.capacityHint = A large chest has twice as many slots. Lowering it never removes slots that hold items.

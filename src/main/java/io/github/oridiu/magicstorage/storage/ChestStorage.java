@@ -71,7 +71,8 @@ public class ChestStorage {
 
     /**
      * Returns the chest's container, loading it from disk or creating an empty
-     * one, and grows it to at least {@code capacity} slots. Null when the save
+     * one, and brings it to {@code capacity} slots: it grows if smaller, and
+     * empty slots past that size are dropped, but never a slot holding items. Null when the save
      * file is there but cannot be read; that file is left as it is.
      */
     @Nullable
@@ -93,13 +94,23 @@ public class ChestStorage {
         if (container == null) {
             return null;
         }
-        if (container.getCapacity() >= capacity) {
+        if (container.getCapacity() == capacity) {
             return container;
         }
-        SimpleItemContainer grown = new SimpleItemContainer(capacity);
-        container.moveAllItemStacksTo(grown);
-        replace(resolved, container, grown);
-        return grown;
+        // Grow to the configured size, or drop empty slots past it. Slots that hold items stay where they are.
+        short size = (short) Math.max(capacity, lastUsedSlot(container) + 1);
+        if (size == container.getCapacity()) {
+            return container;
+        }
+        SimpleItemContainer resized = new SimpleItemContainer(size);
+        for (short slot = 0; slot < size && slot < container.getCapacity(); slot++) {
+            ItemStack stack = container.getItemStack(slot);
+            if (!ItemStack.isEmpty(stack)) {
+                resized.setItemStackForSlot(slot, stack, false);
+            }
+        }
+        replace(resolved, container, resized);
+        return resized;
     }
 
     /**
@@ -236,8 +247,27 @@ public class ChestStorage {
         dirty.add(key);
     }
 
+    /** Number of slots that hold items (not the number of items, which is what countItemStacks returns). */
     private static int countUsed(@Nullable SimpleItemContainer container) {
-        return container == null ? 0 : container.countItemStacks(stack -> !ItemStack.isEmpty(stack));
+        if (container == null) {
+            return 0;
+        }
+        int used = 0;
+        for (short slot = 0; slot < container.getCapacity(); slot++) {
+            if (!ItemStack.isEmpty(container.getItemStack(slot))) {
+                used++;
+            }
+        }
+        return used;
+    }
+
+    private static int lastUsedSlot(@Nonnull SimpleItemContainer container) {
+        for (short slot = (short) (container.getCapacity() - 1); slot >= 0; slot--) {
+            if (!ItemStack.isEmpty(container.getItemStack(slot))) {
+                return slot;
+            }
+        }
+        return -1;
     }
 
     private void deleteFiles(@Nonnull ChestKey key) {
