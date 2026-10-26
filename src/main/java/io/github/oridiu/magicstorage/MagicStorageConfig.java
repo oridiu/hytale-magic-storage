@@ -23,7 +23,7 @@ public class MagicStorageConfig {
             .append(new KeyedCodec<>("ChestCapacity", Codec.INTEGER),
                     (config, value) -> config.chestCapacity = value,
                     config -> config.chestCapacity)
-            .documentation("Number of slots of a Magic Chest. A large Magic Chest has twice as many. Chests only grow, they never shrink.")
+            .documentation("Number of slots of a Magic Chest. A large Magic Chest has twice as many. Lowering it only removes empty slots at the end; items always stay in the chest.")
             .add()
             .append(new KeyedCodec<>("ShowLinkedChest", Codec.BOOLEAN),
                     (config, value) -> config.showLinkedChest = value,

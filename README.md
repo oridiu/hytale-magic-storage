@@ -44,7 +44,7 @@ On first start the server creates `mods/oridiu_MagicStorage/config.json`:
 | Setting | Default | Description |
 |---|---|---|
 | `AllowDepositViaBag` | `true` | Set to `false` to only allow taking items out through the bag, not putting them in |
-| `ChestCapacity` | `18` | Slots of a Magic Chest, same as a vanilla chest (9 to 90). A large chest has twice as many. Raising it grows existing chests the next time they are opened; chests never shrink |
+| `ChestCapacity` | `18` | Slots of a Magic Chest, same as a vanilla chest (9 to 90). A large chest has twice as many. Existing chests take the new size the next time they are opened; lowering it only removes empty slots at the end, never items |
 | `ShowLinkedChest` | `true` | Show sparks and a glowing gem on the chest a player's bag is linked to |
 
 Chest contents are stored in `mods/oridiu_MagicStorage/chests/`, one file per chest. A chest is saved when its window closes, whenever the world saves, and when the server stops. `links.json` next to it records which positions belong to a large chest.
